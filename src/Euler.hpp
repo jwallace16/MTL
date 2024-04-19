@@ -18,6 +18,12 @@
 namespace matrix
 {
 
+template<class T>
+class DCM;
+
+template<class T>
+class Quaternion;
+
 enum class EulerSequence
 {
     // "Proper" Euler Angles
@@ -35,12 +41,6 @@ enum class EulerSequence
     ZYX_321,
     YXZ_213
 };
-
-template<class T>
-class DCM;
-
-template<class T>
-class Quaternion;
 
 template<class T>
 class Euler: public Vector3<T>
@@ -72,14 +72,11 @@ public:
     inline T getAngle2() const { return this->data[1]; }
     inline T getAngle3() const { return this->data[2]; }
 
-    // //! Obtain a DCM from an Euler sequence
-    DCM<T> getDCM() const;
+    //! Obtain a DCM from an Euler sequence
+    DCM<T> getDCM() const; // TODO: remove when DCM class is finalized & use conversion constructor
 protected:
 private:
     EulerSequence sequence;
-    // SquareMatrix<T, 3> r1;
-    // SquareMatrix<T, 3> r2;
-    // SquareMatrix<T, 3> r3;
 }; // class Euler
 
 //! Default constructor
