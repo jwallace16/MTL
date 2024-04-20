@@ -84,21 +84,20 @@ DCM<T>::DCM(const SquareMatrix<T, 3> &other):
 {
 }
 
-//! Constructor from Quaternion (Equation 1.8-18, Stevens and Lewis)
+//! Constructor from Quaternion
 template<class T>
 DCM<T>::DCM(const Quaternion<T> &q)
 {
     DCM &self = *this;
-    // const T q0, q1, q2, q3 = q(0), q(1), q(2), q(3);
-    self(0,0) = q(0)*q(0) + q(1)*q(1) - q(2)*q(2) - q(3)*q(3);
-    self(0,1) = T(2)*(q(1)*q(2) + q(0)*q(3));
-    self(0,2) = T(2)*(q(1)*q(3) - q(0)*q(2));
-    self(1,0) = T(2)*(q(1)*q(2) - q(0)*q(3));
-    self(1,1) = q(0)*q(0) - q(1)*q(1) + q(2)*q(2) - q(3)*q(3);
-    self(1,2) = T(2)*(q(2)*q(3) + q(0)*q(1));
-    self(2,0) = T(2)*(q(1)*q(3) + q(0)*q(2));
-    self(2,1) = T(2)*(q(2)*q(3) - q(0)*q(1));
-    self(2,2) = q(0)*q(0) - q(1)*q(1) - q(2)*q(2) + q(3)*q(3);
+    this->data[0] = 1.0 - 2.0*(q(2)*q(2) + q(3)*q(3));
+    this->data[1] = 2.0*(q(1)*q(2) - q(3)*q(0));
+    this->data[2] = 2.0*(q(1)*q(3) + q(2)*q(0));
+    this->data[3] = 2.0*(q(1)*q(2) + q(3)*q(0));
+    this->data[4] = 1.0 - 2.0*(q(1)*q(1) + q(3)*q(3));
+    this->data[5] = 2.0*(q(2)*q(3) - q(1)*q(0));
+    this->data[6] = 2.0*(q(1)*q(3) - q(2)*q(0));
+    this->data[7] = 2.0*(q(2)*q(3) + q(1)*q(0));
+    this->data[8] = 1.0 - 2.0*(q(1)*q(1) + q(2)*q(2));
 }
 
 //! Constructor from Euler Angles
