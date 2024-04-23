@@ -104,94 +104,119 @@ DCM<T>::DCM(const Quaternion<T> &q)
 template<class T>
 DCM<T>::DCM(const Euler<T> &e)
 {
-    #if 0
-    matrix::DCM<T> dcm;
-    switch(sequence)
+    T a1 = e.getAngle1();
+    T a2 = e.getAngle2();
+    T a3 = e.getAngle3();
+    switch(e.getSequence())
     {
         case EulerSequence::ZXZ_313:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a3) - std::cos(a2)*std::sin(a1)*std::sin(a3);
+            this->data[1] = -std::cos(a1)*std::sin(a3) - std::cos(a2)*std::cos(a3)*std::sin(a1);
+            this->data[2] = std::sin(a1)*std::sin(a2);
+            this->data[3] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::cos(a2)*std::sin(a3);
+            this->data[4] = std::cos(a1)*std::cos(a2)*std::cos(a3) - std::sin(a1)*std::sin(a3);
+            this->data[5] = -std::cos(a1)*std::sin(a2);
+            this->data[6] = std::sin(a2)*std::sin(a3);
+            this->data[7] = std::cos(a3)*std::sin(a2);
+            this->data[8] = std::cos(a2);
         } break;
 
         case EulerSequence::XYX_121:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::YZY_232:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::ZYZ_323:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::XZX_131:
         {
-            ///
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::YXY_212:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::XYZ_123:
         {
-            //
+            this->data[0] = std::cos(a2)*std::cos(a3);
+            this->data[1] = -std::cos(a2)*std::sin(a3);
+            this->data[2] = std::sin(a2);
+            this->data[3] = std::cos(a1)*std::sin(a3) + std::cos(a3)*std::sin(a1)*std::sin(a2);
+            this->data[4] = std::cos(a1)*std::cos(a3) - std::sin(a1)*std::sin(a2)*std::sin(a3);
+            this->data[5] = -std::cos(a2)*std::sin(a1);
+            this->data[6] = std::sin(a1)*std::sin(a3) - std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[7] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::sin(a2)*std::sin(a3);
+            this->data[8] = std::cos(a1)*std::cos(a2);
         } break;
 
         case EulerSequence::YZX_231:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::ZXY_312:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::XZY_132:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         case EulerSequence::ZYX_321:
         {
-            // Z-axis
-            T zvals[3][3] = {{std::cos(this->data[2]), std::sin(this->data[2]), 0},
-                             {-std::sin(this->data[2]), std::cos(this->data[2]), 0},
-                             {0, 0, 1}};
-            DCM<T> z(zvals);
-
-            // Y-axis
-            T yvals[3][3] = {{std::cos(this->data[1]), 0, -std::sin(this->data[1])},
-                             {0, 1, 0},
-                             {std::sin(this->data[1]), 0, std::cos(this->data[1])}};
-            DCM<T> y(yvals);
-
-            // X-axis
-            T xvals[3][3] = {{1, 0, 0},
-                             {0, std::cos(this->data[0]), std::sin(this->data[0])},
-                             {0, -std::sin(this->data[0]), std::cos(this->data[0])}};
-            DCM<T> x(xvals);
-
-            dcm = x*y*z;
+            this->data[0] = std::cos(a1)*std::cos(a2);
+            this->data[1] = std::cos(a1)*std::sin(a2)*std::sin(a3) - std::cos(a3)*std::sin(a1);
+            this->data[2] = std::sin(a1)*std::sin(a3) + std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[3] = std::cos(a2)*std::sin(a1);
+            this->data[4] = std::cos(a1)*std::cos(a3) + std::sin(a1)*std::sin(a2)*std::sin(a3);
+            this->data[5] = std::cos(a3)*std::sin(a1)*std::sin(a2) - std::cos(a1)*std::sin(a3);
+            this->data[6] = -std::sin(a2);
+            this->data[7] = std::cos(a2)*std::sin(a3);
+            this->data[8] = std::cos(a2)*std::cos(a3);
         } break;
 
         case EulerSequence::YXZ_213:
         {
-            //
+            T dcmvals[3][3] = {{},
+                               {},
+                               {}};
         } break;
 
         default:
         {
-            //
+            // Undefined rotation sequence
+
         } break;
     }
-    #endif
 }
 
 } // namespace matrix
