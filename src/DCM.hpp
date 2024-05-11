@@ -215,16 +215,28 @@ DCM<T>::DCM(const Euler<T> &e)
 
         case EulerSequence::ZXY_312:
         {
-            T dcmvals[3][3] = {{},
-                               {},
-                               {}};
+            this->data[0] = std::cos(a1)*std::cos(a3) - std::sin(a1)*std::sin(a2)*std::sin(a3);
+            this->data[1] = -std::cos(a2)*std::sin(a2);
+            this->data[2] = std::cos(a1)*std::sin(a3) + std::cos(a3)*std::sin(a1)*std::sin(a2);
+            this->data[3] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::sin(a2)*std::sin(a3);
+            this->data[4] = std::cos(a1)*std::cos(a2);
+            this->data[5] = std::sin(a1)*std::sin(a3) - std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[6] = -std::cos(a2)*std::sin(a3);
+            this->data[7] = std::sin(a2);
+            this->data[8] = std::cos(a2)*std::cos(a3);
         } break;
 
         case EulerSequence::XZY_132:
         {
-            T dcmvals[3][3] = {{},
-                               {},
-                               {}};
+            this->data[0] = std::cos(a2)*std::cos(a3);
+            this->data[1] = -std::sin(a2);
+            this->data[2] = std::cos(a2)*std::sin(a3);
+            this->data[3] = std::sin(a1)*std::sin(a3) + std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[4] = std::cos(a1)*std::cos(a2);
+            this->data[5] = std::cos(a1)*std::sin(a2)*std::sin(a3) - std::cos(a3)*std::sin(a1);
+            this->data[6] = std::cos(a3)*std::sin(a1)*std::sin(a2) - std::cos(a1)*std::sin(a3);
+            this->data[7] = std::cos(a2)*std::sin(a1);
+            this->data[8] = std::cos(a1)*std::cos(a3) + std::sin(a1)*std::sin(a2)*std::sin(a3);
         } break;
 
         case EulerSequence::ZYX_321:
