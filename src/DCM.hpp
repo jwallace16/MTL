@@ -17,11 +17,11 @@
 namespace matrix
 {
 
-template<class T>
-class Quaternion;
+// template<class T>
+// class Quaternion;
 
-template<class T>
-class Euler;
+// template<class T>
+// class Euler;
 
 template<class T>
 class DCM: public SquareMatrix<T, 3>
@@ -100,6 +100,25 @@ DCM<T>::DCM(const Quaternion<T> &q)
     this->data[8] = 1.0 - 2.0*(q(1)*q(1) + q(2)*q(2));
 }
 
+//! Constructor from Euler Angles
+template<class T>
+DCM<T>::DCM(const Euler<T> &e)
+{
+    T psi = e.getPsi();
+    T theta = e.getTheta();
+    T phi = e.getPhi();
+    this->data[0] = std::cos(psi)*std::cos(theta);
+    this->data[1] = std::cos(psi)*std::sin(theta)*std::sin(phi) - std::cos(phi)*std::sin(psi);
+    this->data[2] = std::sin(psi)*std::sin(phi) + std::cos(psi)*std::cos(phi)*std::sin(theta);
+    this->data[3] = std::cos(theta)*std::sin(psi);
+    this->data[4] = std::cos(psi)*std::cos(phi) + std::sin(psi)*std::sin(theta)*std::sin(phi);
+    this->data[5] = std::cos(phi)*std::sin(psi)*std::sin(theta) - std::cos(psi)*std::sin(phi);
+    this->data[6] = -std::sin(theta);
+    this->data[7] = std::cos(theta)*std::sin(phi);
+    this->data[8] = std::cos(theta)*std::cos(phi);
+}
+
+#if 0
 //! Constructor from Euler Angles
 template<class T>
 DCM<T>::DCM(const Euler<T> &e)
@@ -268,10 +287,13 @@ DCM<T>::DCM(const Euler<T> &e)
         default:
         {
             // Undefined rotation sequence
-
+            char message[100];
+            snprintf(message, 100, "ERROR: Undefined rotation sequence!\n");
+            throw std::runtime_error(message);
         } break;
     }
 }
+#endif
 
 } // namespace matrix
 

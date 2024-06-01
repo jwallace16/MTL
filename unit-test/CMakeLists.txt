@@ -17,7 +17,7 @@ set(TEST_SOURCES
     TestVector3.cpp
     TestQuaternion.cpp
     TestDCM.cpp
-    #TestEuler.cpp
+    TestEuler.cpp
 )
 
 # Modern CMake for C++, chapter08/04-gtest/test/CMakeLists.txt
