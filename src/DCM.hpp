@@ -17,11 +17,11 @@
 namespace matrix
 {
 
-template<class T>
-class Quaternion;
+// template<class T>
+// class Quaternion;
 
-template<class T>
-class Euler;
+// template<class T>
+// class Euler;
 
 template<class T>
 class DCM: public SquareMatrix<T, 3>
@@ -84,116 +84,216 @@ DCM<T>::DCM(const SquareMatrix<T, 3> &other):
 {
 }
 
-//! Constructor from Quaternion (Equation 1.8-18, Stevens and Lewis)
+//! Constructor from Quaternion
 template<class T>
 DCM<T>::DCM(const Quaternion<T> &q)
 {
     DCM &self = *this;
-    // const T q0, q1, q2, q3 = q(0), q(1), q(2), q(3);
-    self(0,0) = q(0)*q(0) + q(1)*q(1) - q(2)*q(2) - q(3)*q(3);
-    self(0,1) = T(2)*(q(1)*q(2) + q(0)*q(3));
-    self(0,2) = T(2)*(q(1)*q(3) - q(0)*q(2));
-    self(1,0) = T(2)*(q(1)*q(2) - q(0)*q(3));
-    self(1,1) = q(0)*q(0) - q(1)*q(1) + q(2)*q(2) - q(3)*q(3);
-    self(1,2) = T(2)*(q(2)*q(3) + q(0)*q(1));
-    self(2,0) = T(2)*(q(1)*q(3) + q(0)*q(2));
-    self(2,1) = T(2)*(q(2)*q(3) - q(0)*q(1));
-    self(2,2) = q(0)*q(0) - q(1)*q(1) - q(2)*q(2) + q(3)*q(3);
+    this->data[0] = 1.0 - 2.0*(q(2)*q(2) + q(3)*q(3));
+    this->data[1] = 2.0*(q(1)*q(2) - q(3)*q(0));
+    this->data[2] = 2.0*(q(1)*q(3) + q(2)*q(0));
+    this->data[3] = 2.0*(q(1)*q(2) + q(3)*q(0));
+    this->data[4] = 1.0 - 2.0*(q(1)*q(1) + q(3)*q(3));
+    this->data[5] = 2.0*(q(2)*q(3) - q(1)*q(0));
+    this->data[6] = 2.0*(q(1)*q(3) - q(2)*q(0));
+    this->data[7] = 2.0*(q(2)*q(3) + q(1)*q(0));
+    this->data[8] = 1.0 - 2.0*(q(1)*q(1) + q(2)*q(2));
 }
 
 //! Constructor from Euler Angles
 template<class T>
 DCM<T>::DCM(const Euler<T> &e)
 {
-    #if 0
-    matrix::DCM<T> dcm;
-    switch(sequence)
+    T psi = e.getPsi();
+    T theta = e.getTheta();
+    T phi = e.getPhi();
+    this->data[0] = std::cos(psi)*std::cos(theta);
+    this->data[1] = std::cos(psi)*std::sin(theta)*std::sin(phi) - std::cos(phi)*std::sin(psi);
+    this->data[2] = std::sin(psi)*std::sin(phi) + std::cos(psi)*std::cos(phi)*std::sin(theta);
+    this->data[3] = std::cos(theta)*std::sin(psi);
+    this->data[4] = std::cos(psi)*std::cos(phi) + std::sin(psi)*std::sin(theta)*std::sin(phi);
+    this->data[5] = std::cos(phi)*std::sin(psi)*std::sin(theta) - std::cos(psi)*std::sin(phi);
+    this->data[6] = -std::sin(theta);
+    this->data[7] = std::cos(theta)*std::sin(phi);
+    this->data[8] = std::cos(theta)*std::cos(phi);
+}
+
+#if 0
+//! Constructor from Euler Angles
+template<class T>
+DCM<T>::DCM(const Euler<T> &e)
+{
+    T a1 = e.getAngle1();
+    T a2 = e.getAngle2();
+    T a3 = e.getAngle3();
+    switch(e.getSequence())
     {
         case EulerSequence::ZXZ_313:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a3) - std::cos(a2)*std::sin(a1)*std::sin(a3);
+            this->data[1] = -std::cos(a1)*std::sin(a3) - std::cos(a2)*std::cos(a3)*std::sin(a1);
+            this->data[2] = std::sin(a1)*std::sin(a2);
+            this->data[3] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::cos(a2)*std::sin(a3);
+            this->data[4] = std::cos(a1)*std::cos(a2)*std::cos(a3) - std::sin(a1)*std::sin(a3);
+            this->data[5] = -std::cos(a1)*std::sin(a2);
+            this->data[6] = std::sin(a2)*std::sin(a3);
+            this->data[7] = std::cos(a3)*std::sin(a2);
+            this->data[8] = std::cos(a2);
         } break;
 
         case EulerSequence::XYX_121:
         {
-            //
+            this->data[0] = std::cos(a2);
+            this->data[1] = std::sin(a2)*std::sin(a3);
+            this->data[2] = std::cos(a3)*std::sin(a2);
+            this->data[3] = std::sin(a1)*std::sin(a2);
+            this->data[4] = std::cos(a1)*std::cos(a3) - std::cos(a2)*std::sin(a1)*std::sin(a3);
+            this->data[5] = -std::cos(a1)*std::sin(a3) - std::cos(a2)*std::cos(a3)*std::sin(a1);
+            this->data[6] = -std::cos(a1)*std::sin(a2);
+            this->data[7] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::cos(a2)*std::sin(a3);
+            this->data[8] = std::cos(a1)*std::cos(a2)*std::cos(a3) - std::sin(a1)*std::sin(a3);
         } break;
 
         case EulerSequence::YZY_232:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a2)*std::cos(a3) - std::sin(a1)*std::sin(a3);
+            this->data[1] = -std::cos(a1)*std::sin(a1);
+            this->data[2] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::cos(a2)*std::sin(a3);
+            this->data[3] = std::cos(a3)*std::sin(a2);
+            this->data[4] = std::cos(a2);
+            this->data[5] = std::sin(a2)*std::sin(a3);
+            this->data[6] = -std::cos(a1)*std::sin(a3) - std::cos(a2)*std::cos(a3)*std::sin(a1);
+            this->data[7] = std::sin(a1)*std::sin(a2);
+            this->data[8] = std::cos(a1)*std::cos(a3) - std::cos(a2)*std::sin(a1)*std::sin(a3);
         } break;
 
         case EulerSequence::ZYZ_323:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a2)*std::cos(a3) - std::sin(a1)*std::sin(a3);
+            this->data[1] = -std::cos(a3)*std::sin(a1) - std::cos(a1)*std::cos(a2)*std::sin(a3);
+            this->data[2] = std::cos(a1)*std::sin(a2);
+            this->data[3] = std::cos(a1)*std::sin(a3) + std::cos(a2)*std::cos(a3)*std::sin(a1);
+            this->data[4] = std::cos(a1)*std::cos(a3) - std::cos(a2)*std::sin(a1)*std::sin(a3);
+            this->data[5] = std::sin(a1)*std::sin(a2);
+            this->data[6] = -std::cos(a3)*std::sin(a2);
+            this->data[7] = std::sin(a2)*std::sin(a3);
+            this->data[8] = std::cos(a2);
         } break;
 
         case EulerSequence::XZX_131:
         {
-            ///
+            this->data[0] = std::cos(a2);
+            this->data[1] = -std::cos(a3)*std::sin(a2);
+            this->data[2] = std::sin(a2)*std::sin(a3);
+            this->data[3] = std::cos(a1)*std::sin(a2);
+            this->data[4] = std::cos(a1)*std::cos(a2)*std::cos(a3) - std::sin(a1)*std::sin(a3);
+            this->data[5] = -std::cos(a3)*std::sin(a1) - std::cos(a1)*std::cos(a2)*std::sin(a3);
+            this->data[6] = std::sin(a1)*std::sin(a2);
+            this->data[7] = std::cos(a1)*std::sin(a3) + std::cos(a2)*std::cos(a3)*std::sin(a1);
+            this->data[8] = std::cos(a1)*std::cos(a3) - std::cos(a2)*std::sin(a1)*std::sin(a3);
         } break;
 
         case EulerSequence::YXY_212:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a3) - std::cos(a2)*std::sin(a1)*std::sin(a3);
+            this->data[1] = std::sin(a1)*std::sin(a2);
+            this->data[2] = std::cos(a1)*std::sin(a3) + std::cos(a2)*std::cos(a3)*std::sin(a1);
+            this->data[3] = std::sin(a2)*std::sin(a3);
+            this->data[4] = std::cos(a2);
+            this->data[5] = -std::cos(a3)*std::sin(a2);
+            this->data[6] = -std::cos(a3)*std::sin(a1) - std::cos(a1)*std::cos(a2)*std::sin(a3);
+            this->data[7] = std::cos(a1)*std::sin(a2);
+            this->data[8] = std::cos(a1)*std::cos(a2)*std::cos(a3) - std::sin(a1)*std::sin(a3);
         } break;
 
         case EulerSequence::XYZ_123:
         {
-            //
+            this->data[0] = std::cos(a2)*std::cos(a3);
+            this->data[1] = -std::cos(a2)*std::sin(a3);
+            this->data[2] = std::sin(a2);
+            this->data[3] = std::cos(a1)*std::sin(a3) + std::cos(a3)*std::sin(a1)*std::sin(a2);
+            this->data[4] = std::cos(a1)*std::cos(a3) - std::sin(a1)*std::sin(a2)*std::sin(a3);
+            this->data[5] = -std::cos(a2)*std::sin(a1);
+            this->data[6] = std::sin(a1)*std::sin(a3) - std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[7] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::sin(a2)*std::sin(a3);
+            this->data[8] = std::cos(a1)*std::cos(a2);
         } break;
 
         case EulerSequence::YZX_231:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a2);
+            this->data[1] = std::sin(a1)*std::sin(a3) - std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[2] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::sin(a2)*std::sin(a3);
+            this->data[3] = std::sin(a2);
+            this->data[4] = std::cos(a2)*std::cos(a3);
+            this->data[5] = -std::cos(a2)*std::sin(a3);
+            this->data[6] = -std::cos(a2)*std::sin(a1);
+            this->data[7] = std::cos(a1)*std::sin(a3) + std::cos(a3)*std::sin(a1)*std::sin(a2);
+            this->data[8] = std::cos(a1)*std::cos(a3) - std::sin(a1)*std::sin(a2)*std::sin(a3);
         } break;
 
         case EulerSequence::ZXY_312:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a3) - std::sin(a1)*std::sin(a2)*std::sin(a3);
+            this->data[1] = -std::cos(a2)*std::sin(a2);
+            this->data[2] = std::cos(a1)*std::sin(a3) + std::cos(a3)*std::sin(a1)*std::sin(a2);
+            this->data[3] = std::cos(a3)*std::sin(a1) + std::cos(a1)*std::sin(a2)*std::sin(a3);
+            this->data[4] = std::cos(a1)*std::cos(a2);
+            this->data[5] = std::sin(a1)*std::sin(a3) - std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[6] = -std::cos(a2)*std::sin(a3);
+            this->data[7] = std::sin(a2);
+            this->data[8] = std::cos(a2)*std::cos(a3);
         } break;
 
         case EulerSequence::XZY_132:
         {
-            //
+            this->data[0] = std::cos(a2)*std::cos(a3);
+            this->data[1] = -std::sin(a2);
+            this->data[2] = std::cos(a2)*std::sin(a3);
+            this->data[3] = std::sin(a1)*std::sin(a3) + std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[4] = std::cos(a1)*std::cos(a2);
+            this->data[5] = std::cos(a1)*std::sin(a2)*std::sin(a3) - std::cos(a3)*std::sin(a1);
+            this->data[6] = std::cos(a3)*std::sin(a1)*std::sin(a2) - std::cos(a1)*std::sin(a3);
+            this->data[7] = std::cos(a2)*std::sin(a1);
+            this->data[8] = std::cos(a1)*std::cos(a3) + std::sin(a1)*std::sin(a2)*std::sin(a3);
         } break;
 
         case EulerSequence::ZYX_321:
         {
-            // Z-axis
-            T zvals[3][3] = {{std::cos(this->data[2]), std::sin(this->data[2]), 0},
-                             {-std::sin(this->data[2]), std::cos(this->data[2]), 0},
-                             {0, 0, 1}};
-            DCM<T> z(zvals);
-
-            // Y-axis
-            T yvals[3][3] = {{std::cos(this->data[1]), 0, -std::sin(this->data[1])},
-                             {0, 1, 0},
-                             {std::sin(this->data[1]), 0, std::cos(this->data[1])}};
-            DCM<T> y(yvals);
-
-            // X-axis
-            T xvals[3][3] = {{1, 0, 0},
-                             {0, std::cos(this->data[0]), std::sin(this->data[0])},
-                             {0, -std::sin(this->data[0]), std::cos(this->data[0])}};
-            DCM<T> x(xvals);
-
-            dcm = x*y*z;
+            this->data[0] = std::cos(a1)*std::cos(a2);
+            this->data[1] = std::cos(a1)*std::sin(a2)*std::sin(a3) - std::cos(a3)*std::sin(a1);
+            this->data[2] = std::sin(a1)*std::sin(a3) + std::cos(a1)*std::cos(a3)*std::sin(a2);
+            this->data[3] = std::cos(a2)*std::sin(a1);
+            this->data[4] = std::cos(a1)*std::cos(a3) + std::sin(a1)*std::sin(a2)*std::sin(a3);
+            this->data[5] = std::cos(a3)*std::sin(a1)*std::sin(a2) - std::cos(a1)*std::sin(a3);
+            this->data[6] = -std::sin(a2);
+            this->data[7] = std::cos(a2)*std::sin(a3);
+            this->data[8] = std::cos(a2)*std::cos(a3);
         } break;
 
         case EulerSequence::YXZ_213:
         {
-            //
+            this->data[0] = std::cos(a1)*std::cos(a3) + std::sin(a1)*std::sin(a2)*std::sin(a3);
+            this->data[1] = std::cos(a3)*std::sin(a1)*std::sin(a2) - std::cos(a1)*std::sin(a3);
+            this->data[2] = std::cos(a2)*std::sin(a1);
+            this->data[3] = std::cos(a2)*std::sin(a3);
+            this->data[4] = std::cos(a2)*std::cos(a3);
+            this->data[5] = -std::sin(a2);
+            this->data[6] = std::cos(a1)*std::sin(a2)*std::sin(a3) - std::cos(a3)*std::sin(a1);
+            this->data[7] = std::cos(a1)*std::cos(a3)*std::sin(a2) + std::sin(a1)*std::sin(a3);
+            this->data[8] = std::cos(a1)*std::cos(a2);
         } break;
 
         default:
         {
-            //
+            // Undefined rotation sequence
+            char message[100];
+            snprintf(message, 100, "ERROR: Undefined rotation sequence!\n");
+            throw std::runtime_error(message);
         } break;
     }
-    #endif
 }
+#endif
 
 } // namespace matrix
 

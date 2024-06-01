@@ -14,11 +14,11 @@
 namespace matrix
 {
 
-// template<class T, size_t M, size_t N>
-// class Matrix;
+template<class T, size_t M, size_t N>
+class Matrix;
 
-// template<class T, size_t M>
-// class Vector;
+template<class T, size_t M>
+class Vector;
 
 template<class T, size_t M>
 class SquareMatrix : public Matrix<T, M, M>

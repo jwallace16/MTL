@@ -2,7 +2,16 @@
 //!
 //! @file Euler.hpp
 //!
-//! Euler angles class. This class assumes all angles are provided in radians
+//! Euler angles class. This class assumes all angles are provided in radians.
+//! I initially wanted to provide an Euler class that could represent any 
+//! rotation sequence (think: for robotics applications, etc), but for the time
+//! being I'd rather cover more ground before working through a lot of cases 
+//! that are unlikely to be used. TL;DR I am lazy.
+//!
+//! This class will utilize a ZYX (3-2-1) right-handed rotation sequence, with:
+//! Z axis: psi (yaw)
+//! Y axis: theta (pitch)
+//! X axis: phi (roll)
 //!
 //! @author David Wallace <jdavidwallace1@gmail.com>
 ///////////////////////////////////////////////////////////////////////////////
@@ -18,6 +27,13 @@
 namespace matrix
 {
 
+template<class T>
+class DCM;
+
+template<class T>
+class Quaternion;
+
+#if 0
 enum class EulerSequence
 {
     // "Proper" Euler Angles
@@ -35,28 +51,23 @@ enum class EulerSequence
     ZYX_321,
     YXZ_213
 };
+#endif
 
 template<class T>
-class DCM;
-
-template<class T>
-class Quaternion;
-
-template<class T>
-class Euler: public Vector3<T>
+class Euler
 {
 public:
     //! Default constructor
-    Euler(EulerSequence seq = EulerSequence::ZYX_321);
+    Euler();
 
     //! Copy constructor from Vector
-    Euler(const Vector<T, 3> &other, EulerSequence seq = EulerSequence::ZYX_321);
+    // Euler(const Vector<T, 3> &other, EulerSequence seq = EulerSequence::ZYX_321);
 
     //! Copy constructor from Matrix
-    Euler(const Matrix<T, 3, 1> &other, EulerSequence seq = EulerSequence::ZYX_321);
+    // Euler(const Matrix<T, 3, 1> &other, EulerSequence seq = EulerSequence::ZYX_321);
 
     //! Create from provided angles
-    Euler(T _angle1, T _angle2, T _angle3, EulerSequence seq = EulerSequence::ZYX_321);
+    Euler(T _psi, T _theta, T _phi);
 
     //! Create from DCM
     Euler(const DCM<T> &dcm);
@@ -64,53 +75,45 @@ public:
     //! Create from quaternion
     Euler(const Quaternion<T> &quaternion);
 
-    //! Get sequence
-    inline EulerSequence getSequence() const { return sequence; }
+    //! Get yaw/heading/psi
+    inline const T getPsi() const { return psi; }
 
-    //! Get angle-1, -2, -3
-    inline T getAngle1() const { return this->data[0]; }
-    inline T getAngle2() const { return this->data[1]; }
-    inline T getAngle3() const { return this->data[2]; }
+    //! Get pitch/theta
+    inline const T getTheta() const { return theta; }
 
-    // //! Obtain a DCM from an Euler sequence
-    DCM<T> getDCM() const;
+    //! Get roll/phi
+    inline const T getPhi() const { return phi; }
+
+    //! Assign yaw/psi
+    inline T& Psi() { return psi; }
+
+    //! Assign pitch/theta
+    inline T& Theta() { return theta; }
+
+    //! Assign roll/phi
+    inline T& Phi() { return phi; }
 protected:
 private:
-    EulerSequence sequence;
-    // SquareMatrix<T, 3> r1;
-    // SquareMatrix<T, 3> r2;
-    // SquareMatrix<T, 3> r3;
+    T psi;
+    T theta;
+    T phi;
 }; // class Euler
 
 //! Default constructor
 template<class T>
-Euler<T>::Euler(EulerSequence seq):
-    Vector3<T>(),
-    sequence(seq)
-{
-}
-
-//! Copy constructor from Vector
-template<class T>
-Euler<T>::Euler(const Vector<T, 3> &other, EulerSequence seq):
-    Vector3<T>(other),
-    sequence(seq)
-{
-}
-
-//! Copy constructor from Matrix
-template<class T>
-Euler<T>::Euler(const Matrix<T, 3, 1> &other, EulerSequence seq):
-    Vector3<T>(other),
-    sequence(seq)
+Euler<T>::Euler():
+    psi(0),
+    theta(0),
+    phi(0)
 {
 }
 
 //! Create from provided angles
 template<class T>
-Euler<T>::Euler(T _angle1, T _angle2, T _angle3, EulerSequence seq):
-    Vector3<T>(_angle1, _angle2, _angle3),
-    sequence(seq)
+Euler<T>::Euler(T _psi, T _theta, T _phi):
+    psi(_psi),
+    theta(_theta),
+    phi(_phi)
 {
 }
 
@@ -118,7 +121,13 @@ Euler<T>::Euler(T _angle1, T _angle2, T _angle3, EulerSequence seq):
 template<class T>
 Euler<T>::Euler(const DCM<T> &dcm)
 {
-    //
+    // TODO: need to account for (see Stevens and Lewis page 12):
+    // -pi < phi <= +pi
+    // -pi/2 <= theta <= pi/2
+    // -pi < psi <= pi
+    phi = atan2(dcm(1,2), dcm(2,2));
+    theta = -asin(dcm(0,2));
+    psi = atan2(dcm(0,1), dcm(0,0));
 }
 
 //! Create from quaternion
@@ -126,99 +135,6 @@ template<class T>
 Euler<T>::Euler(const Quaternion<T> &quaternion)
 {
     //
-}
-
-//! Obtain a DCM from an Euler sequence
-template<class T>
-DCM<T> Euler<T>::getDCM() const
-{
-    matrix::DCM<T> dcm;
-    switch(sequence)
-    {
-        case EulerSequence::ZXZ_313:
-        {
-            //
-        } break;
-
-        case EulerSequence::XYX_121:
-        {
-            //
-        } break;
-
-        case EulerSequence::YZY_232:
-        {
-            //
-        } break;
-
-        case EulerSequence::ZYZ_323:
-        {
-            //
-        } break;
-
-        case EulerSequence::XZX_131:
-        {
-            ///
-        } break;
-
-        case EulerSequence::YXY_212:
-        {
-            //
-        } break;
-
-        case EulerSequence::XYZ_123:
-        {
-            //
-        } break;
-
-        case EulerSequence::YZX_231:
-        {
-            //
-        } break;
-
-        case EulerSequence::ZXY_312:
-        {
-            //
-        } break;
-
-        case EulerSequence::XZY_132:
-        {
-            //
-        } break;
-
-        case EulerSequence::ZYX_321:
-        {
-            // Z-axis
-            T zvals[3][3] = {{std::cos(this->data[2]), std::sin(this->data[2]), 0},
-                             {-std::sin(this->data[2]), std::cos(this->data[2]), 0},
-                             {0, 0, 1}};
-            DCM<T> z(zvals);
-
-            // Y-axis
-            T yvals[3][3] = {{std::cos(this->data[1]), 0, -std::sin(this->data[1])},
-                             {0, 1, 0},
-                             {std::sin(this->data[1]), 0, std::cos(this->data[1])}};
-            DCM<T> y(yvals);
-
-            // X-axis
-            T xvals[3][3] = {{1, 0, 0},
-                             {0, std::cos(this->data[0]), std::sin(this->data[0])},
-                             {0, -std::sin(this->data[0]), std::cos(this->data[0])}};
-            DCM<T> x(xvals);
-
-            dcm = x*y*z;
-        } break;
-
-        case EulerSequence::YXZ_213:
-        {
-            //
-        } break;
-
-        default:
-        {
-            //
-        } break;
-    }
-    return dcm;
 }
 
 } // namespace matrix

@@ -164,6 +164,7 @@ Vector<T, M> Vector<T,M>::unit() const
     return self / norm();
 }
 
+//! TODO: move this to a non-flight module?
 //! Operator for printing to ostream
 template<class OStream, class T, size_t M>
 OStream &operator<<(OStream &os, const matrix::Vector<T,M> &vec)

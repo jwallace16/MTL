@@ -46,12 +46,6 @@ public:
     //! Move assignment
     Matrix& operator=(Matrix&& other) = default;
 
-    // //! Print to stdout
-    // void print() const;
-
-    //! Dump matrix information into string
-    // const char* dumpString() const;
-
     //! Element access operator
     const T &operator()(size_t i, size_t j) const;
 
@@ -138,8 +132,6 @@ protected:
     T data[M*N];
 
 private:
-    // T data[M][N];
-    
 }; // class Matrix
 
 //! Default constructor
@@ -151,12 +143,6 @@ Matrix<T,M,N>::Matrix()
         data[i] = (T)0;
     }
 }
-
-//! Destructor
-// template<class T, size_t M, size_t N>
-// Matrix<T,M,N>::~Matrix()
-// {
-// }
 
 //! Constructor initializing with 2-d array of data
 template<class T, size_t M, size_t N>
@@ -179,69 +165,7 @@ Matrix<T,M,N>::Matrix(const T values[M*N])
     {
         data[i] = values[i];
     }
-    // test: data = values;
 }
-
-//! Copy constructor
-// template<class T, size_t M, size_t N>
-// Matrix<T,M,N>::Matrix(const Matrix<T, M, N> &other)
-// {
-//     std::copy(other.data, other.data + M*N, data);
-// }
-
-//! Move constructor
-// template<class T, size_t M, size_t N>
-// Matrix<T,M,N>::Matrix(Matrix<T, M, N>&& other)
-// {
-//     std::swap(data, other.data);
-// }
-
-//! Copy assignment
-// template<class T, size_t M, size_t N>
-// Matrix<T,M,N>& Matrix<T,M,N>::operator=(const Matrix<T, M, N> &other)
-// {
-//     if(this != &other)
-//     {
-//         Matrix<T, M, N> tmp(other);
-//         std::swap(data, tmp.data);
-//     }
-//     return *this;
-// }
-
-//! Move assignment
-// template<class T, size_t M, size_t N>
-// Matrix<T,M,N>& Matrix<T,M,N>::operator=(Matrix<T, M, N>&& other)
-// {
-//     std::swap(data, other.data);
-//     return *this;
-// }
-
-//! Put matrix values into string buffer
-// template<class T, size_t M, size_t N>
-// void Matrix<T,M,N>::put_string(char *buf, size_t n) const
-// {
-//     const Matrix<T, M, N> &self = *this;
-//     buf[0] = '\0';
-//     for(size_t i = 0; i < M; ++i)
-//     {
-//         for(size_t j = 0; j < N; ++j)
-//         {
-//             // %8.8g
-//             snprintf(buf+strlen(buf), n - strlen(buf), "%g   ", double(self(i,j)));
-//         }
-//         snprintf(buf+strlen(buf), n-strlen(buf), "\n");
-//     }
-// }
-
-//! Print to stdout
-// template<class T, size_t M, size_t N>
-// void Matrix<T,M,N>::print() const
-// {
-//     static const size_t n = 15 * N * M + M + 1;
-//     char str[n];
-//     put_string(str, n);
-//     printf("%s\n", str);
-// }
 
 //! Element access operator
 template<class T, size_t M, size_t N>
@@ -280,14 +204,6 @@ Matrix<T,M,N> Matrix<T,M,N>::operator+(const Matrix<T, M, N> &other) const
     {
         result.data[i] = data[i] + other.data[i];
     }
-    // const Matrix<T, M, N> &self = *this;
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         result(i,j) = self(i,j) + other(i,j);
-    //     }
-    // }
     return result;
 }
 
@@ -300,14 +216,6 @@ Matrix<T,M,N> Matrix<T,M,N>::operator-(const Matrix<T, M, N> &other) const
     {
         result.data[i] = data[i] - other.data[i];
     }
-    // const Matrix<T, M, N> &self = *this;
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         result(i,j) = self(i,j) - other(i,j);
-    //     }
-    // }
     return result;
 }
 
@@ -324,7 +232,6 @@ Matrix<T,M,P> Matrix<T,M,N>::operator*(const Matrix<T, N, P> &other) const
         {
             for(size_t k = 0; k < N; ++k)
             {
-                // result(i,k) += self(i,j) * other(j,k);
                 result(i,j) += self(i,k) * other(k,j);
             }
         }
@@ -340,14 +247,6 @@ void Matrix<T,M,N>::operator+=(const Matrix<T, M, N> &other)
     {
         data[i] += other.data[i];
     }
-    // Matrix<T, M, N> &self = *this;
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         self(i,j) += other(i,j);
-    //     }
-    // }
 }
 
 //! Compound subtraction operator
@@ -358,14 +257,6 @@ void Matrix<T,M,N>::operator-=(const Matrix<T, M, N> &other)
     {
         data[i] -= other.data[i];
     }
-    // Matrix<T, M, N> &self = *this;
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         self(i,j) -= other(i,j);
-    //     }
-    // }
 }
 
 //! Compound matrix multiplication
@@ -385,14 +276,6 @@ Matrix<T,M,N> Matrix<T,M,N>::operator-() const
     {
         result.data[i] = -data[i];
     }
-    // const Matrix<T, M, N> &self = *this;
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         result(i,j) = -self(i,j);
-    //     }
-    // }
     return result;
 }
 
@@ -405,14 +288,6 @@ Matrix<T, M, N> Matrix<T,M,N>::operator+(T value) const
     {
         result.data[i] = data[i] + value;
     }
-    // const Matrix<T, M, N> &self = *this;
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         result(i,j) = self(i,j) + value;
-    //     }
-    // }
     return result;
 }
 
@@ -425,8 +300,6 @@ Matrix<T, M, N> Matrix<T,M,N>::operator-(T value) const
     {
         result.data[i] = data[i] - value;
     }
-    // const Matrix<T, M, N> &self = *this;
-    // return self + (-1 * value);
     return result;
 }
 
@@ -440,13 +313,6 @@ Matrix<T, M, N> Matrix<T,M,N>::operator*(T value) const
     {
         result.data[i] = data[i] * value;
     }
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         result(i,j) = value * self(i,j);
-    //     }
-    // }
     return result;
 }
 
@@ -454,8 +320,6 @@ Matrix<T, M, N> Matrix<T,M,N>::operator*(T value) const
 template<class T, size_t M, size_t N>
 Matrix<T, M, N> Matrix<T,M,N>::operator/(T value) const
 {
-    // const Matrix<T, M, N> &self = *this;
-    // return self * (1 / value);
     Matrix<T, M, N> result;
     for(size_t i = 0; i < M*N; ++i)
     {
@@ -607,13 +471,6 @@ Matrix<T, M, N> Matrix<T,M,N>::abs() const
     {
         result.data[i] = (T)std::fabs(data[i]);
     }
-    // for(size_t i = 0; i < M; ++i)
-    // {
-    //     for(size_t j = 0; j < N; ++j)
-    //     {
-    //         result(i,j) = (T)std::fabs(self(i,j));
-    //     }
-    // }
     return result;
 }
 
@@ -649,45 +506,13 @@ Matrix<T, P, Q> Matrix<T,M,N>::submatrix(size_t rowA, size_t colA, size_t rowB, 
     return res;
 }
 
-//! Functions outside the Matrix class
-// template<class T, size_t M, size_t N>
-// bool isEqual(const Matrix<T, M, N> &a, const Matrix<T, M, N> &b, const T eps = T(1.0e5))
-// {
-//     for(size_t i = 0; i < M; ++i)
-//     {
-//         for(size_t j = 0; j < N; ++j)
-//         {
-//             if(std::fabs(a-b) >= eps)
-//             {
-//                 return false;
-//             }
-//         }
-//     }
-//     return true;
-// }
-
-// template<class T, size_t M, size_t N>
-// Matrix<T, M, N> zeros()
-// {
-//     Matrix<T, M, N> m;
-//     m.setValue( (T) 0);
-//     return m;
-// }
-
-// template<class T, size_t M, size_t N>
-// Matrix<T, M, N> ones()
-// {
-//     Matrix<T, M, N> m;
-//     m.setValue( (T) 1);
-//     return m;
-// }
-
 template<class T, size_t M, size_t N>
 Matrix<T, M, N> operator*(T value, const Matrix<T, M, N> &other)
 {
     return other * value;
 }
 
+//! TODO: move this method into non-flight utilities module?
 template<class T, size_t M, size_t N>
 std::ostream& operator<<(std::ostream &os, const matrix::Matrix<T, M, N> &mat)
 {
