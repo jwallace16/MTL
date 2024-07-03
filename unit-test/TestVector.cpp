@@ -11,7 +11,16 @@
 #include <gtest/gtest.h>
 #include "../src/Vector.hpp"
 
-TEST(VectorTestSuite, TestConstruction)
+TEST(VectorTestSuite, TestDefaultConstructor)
+{
+    matrix::Vector<int, 4> v;
+    EXPECT_EQ(0, v(0));
+    EXPECT_EQ(0, v(1));
+    EXPECT_EQ(0, v(2));
+    EXPECT_EQ(0, v(3));
+}
+
+TEST(VectorTestSuite, TestFlatArrayConstructor)
 {
     int vals1[3] = {4, 5, 6};
     matrix::Vector<int, 3> v1(vals1);
@@ -42,6 +51,15 @@ TEST(VectorTestSuite, TestConstruction)
     EXPECT_DOUBLE_EQ(2.2, v4(1));
     EXPECT_DOUBLE_EQ(3.3, v4(2));
     EXPECT_DOUBLE_EQ(4.4, v4(3));
+}
+
+TEST(VectorTestSuite, TestInitializerListConstructor)
+{
+    matrix::Vector<int, 4> v = {1, 2, 3, 4};
+    EXPECT_EQ(1, v(0));
+    EXPECT_EQ(2, v(1));
+    EXPECT_EQ(3, v(2));
+    EXPECT_EQ(4, v(3));
 }
 
 TEST(VectorTestSuite, TestVectorAddition)

@@ -12,35 +12,44 @@
 #include "../src/Quaternion.hpp"
 #include "../src/DCM.hpp"
 
-TEST(QuaternionTestSuite, TestQuaternionDefaultConstructor)
+TEST(QuaternionTestSuite, TestDefaultConstructor)
 {
-    matrix::Quaternion<double> q1;
-    EXPECT_DOUBLE_EQ(1.0, q1(0));
-    EXPECT_DOUBLE_EQ(0.0, q1(1));
-    EXPECT_DOUBLE_EQ(0.0, q1(2));
-    EXPECT_DOUBLE_EQ(0.0, q1(3));
+    matrix::Quaternion<double> q;
+    EXPECT_DOUBLE_EQ(1.0, q(0));
+    EXPECT_DOUBLE_EQ(0.0, q(1));
+    EXPECT_DOUBLE_EQ(0.0, q(2));
+    EXPECT_DOUBLE_EQ(0.0, q(3));
 }
 
-TEST(QuaternionTestSuite, TestQuaternionConstructorFlatArray)
+TEST(QuaternionTestSuite, TestFlatArrayConstructor)
 {
-    double vals1[4] = {0.0, 1.0, 0.0, 0.0};
-    matrix::Quaternion<double> q2(vals1);
-    EXPECT_DOUBLE_EQ(0.0, q2(0));
-    EXPECT_DOUBLE_EQ(1.0, q2(1));
-    EXPECT_DOUBLE_EQ(0.0, q2(2));
-    EXPECT_DOUBLE_EQ(0.0, q2(3));
+    double vals[4] = {0.0, 1.0, 0.0, 0.0};
+    matrix::Quaternion<double> q(vals);
+    EXPECT_DOUBLE_EQ(0.0, q(0));
+    EXPECT_DOUBLE_EQ(1.0, q(1));
+    EXPECT_DOUBLE_EQ(0.0, q(2));
+    EXPECT_DOUBLE_EQ(0.0, q(3));
 }
 
-TEST(QuaternionTestSuite, TestQuaternionConstructorSingleValues)
+TEST(QuaternionTestSuite, TestIndividualValuesConstructor)
 {
-    matrix::Quaternion<double> q3(0.5, 0.5, 0.5, 0.5);
-    EXPECT_DOUBLE_EQ(0.5, q3(0));
-    EXPECT_DOUBLE_EQ(0.5, q3(1));
-    EXPECT_DOUBLE_EQ(0.5, q3(2));
-    EXPECT_DOUBLE_EQ(0.5, q3(3));
+    matrix::Quaternion<double> q(0.5, 0.5, 0.5, 0.5);
+    EXPECT_DOUBLE_EQ(0.5, q(0));
+    EXPECT_DOUBLE_EQ(0.5, q(1));
+    EXPECT_DOUBLE_EQ(0.5, q(2));
+    EXPECT_DOUBLE_EQ(0.5, q(3));
 }
 
-TEST(QuaternionTestSuite, TestQuaternionConstructorVector3AndAngle)
+TEST(QuaternionTestSuite, TestInitializerListConstructor)
+{
+    matrix::Quaternion<double> q = {0.0, 0.0, -1.0, 0.0};
+    EXPECT_DOUBLE_EQ(0.0, q(0));
+    EXPECT_DOUBLE_EQ(0.0, q(1));
+    EXPECT_DOUBLE_EQ(-1.0, q(2));
+    EXPECT_DOUBLE_EQ(0.0, q(3));
+}
+
+TEST(QuaternionTestSuite, TestVector3AndAngleConstructor)
 {
     matrix::Vector3<double> v1(0.5, 0.5, 0.5);
     matrix::Quaternion<double> q4(v1, 30.0);

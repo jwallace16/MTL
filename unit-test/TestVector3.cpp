@@ -12,47 +12,70 @@
 #include "../src/Vector3.hpp"
 #include "../src/SquareMatrix.hpp"
 
-TEST(Vector3TestSuite, TestConstruction)
+TEST(Vector3TestSuite, TestDefaultConstructor)
 {
-    matrix::Vector3<int> v1;
-    EXPECT_EQ(0, v1(0));
-    EXPECT_EQ(0, v1(1));
-    EXPECT_EQ(0, v1(2));
-
-    int vals2[3] = {4, 5, 6};
-    matrix::Vector3<int> v2(vals2);
-    EXPECT_EQ(vals2[0], v2(0));
-    EXPECT_EQ(vals2[1], v2(1));
-    EXPECT_EQ(vals2[2], v2(2));
-
-    matrix::Vector3<double> v3(2.3, 1.5, 4.2);
-    EXPECT_DOUBLE_EQ(2.3, v3(0));
-    EXPECT_DOUBLE_EQ(1.5, v3(1));
-    EXPECT_DOUBLE_EQ(4.2, v3(2));
-
-    double vals4[3] = {2.1, 2.2, 2.3};
-    matrix::Vector<double, 3> v_type(vals4);
-    matrix::Vector3<double> v4(v_type);
-    EXPECT_DOUBLE_EQ(vals4[0], v4(0));
-    EXPECT_DOUBLE_EQ(vals4[1], v4(1));
-    EXPECT_DOUBLE_EQ(vals4[2], v4(2));
-
-    int vals5[3] = {7, 6, 5};
-    matrix::Vector3<int> v3_type(vals5);
-    matrix::Vector3<int> v5(v3_type);
-    EXPECT_EQ(vals5[0], v5(0));
-    EXPECT_EQ(vals5[1], v5(1));
-    EXPECT_EQ(vals5[2], v5(2));
-
-    int vals6[3] = {1, 2, 3};
-    matrix::Matrix<int, 3, 1> m_type(vals6);
-    matrix::Vector3<int> v6(m_type);
-    EXPECT_EQ(vals6[0], v6(0));
-    EXPECT_EQ(vals6[1], v6(1));
-    EXPECT_EQ(vals6[2], v6(2));
+    matrix::Vector3<int> v;
+    EXPECT_EQ(0, v(0));
+    EXPECT_EQ(0, v(1));
+    EXPECT_EQ(0, v(2));
 }
 
-TEST(Vector3TestSuite, TestVectorAddition)
+TEST(Vector3TestSuite, TestFlatArrayConstructor)
+{
+    int vals1[3] = {4, 5, 6};
+    matrix::Vector3<int> v1(vals1);
+    EXPECT_EQ(vals1[0], v1(0));
+    EXPECT_EQ(vals1[1], v1(1));
+    EXPECT_EQ(vals1[2], v1(2));
+}
+
+TEST(Vector3TestSuite, TestIndividualElementParametersConstructor)
+{
+    matrix::Vector3<double> v(2.3, 1.5, 4.2);
+    EXPECT_DOUBLE_EQ(2.3, v(0));
+    EXPECT_DOUBLE_EQ(1.5, v(1));
+    EXPECT_DOUBLE_EQ(4.2, v(2));
+}
+
+TEST(Vector3TestSuite, TestInitializerListConstructor)
+{
+    matrix::Vector3<int> v = {3, 4, 5};
+    EXPECT_EQ(3, v(0));
+    EXPECT_EQ(4, v(1));
+    EXPECT_EQ(5, v(2));
+}
+
+TEST(Vector3TestSuite, TestVectorCopyConstructor)
+{
+    int vals[3] = {7, 6, 5};
+    matrix::Vector3<int> v3_type(vals);
+    matrix::Vector3<int> v(v3_type);
+    EXPECT_EQ(vals[0], v(0));
+    EXPECT_EQ(vals[1], v(1));
+    EXPECT_EQ(vals[2], v(2));
+}
+
+TEST(Vector3TestSuite, TestVectorToVector3ConversionConstructor)
+{
+    double vals[3] = {2.1, 2.2, 2.3};
+    matrix::Vector<double, 3> v_type(vals);
+    matrix::Vector3<double> v(v_type);
+    EXPECT_DOUBLE_EQ(vals[0], v(0));
+    EXPECT_DOUBLE_EQ(vals[1], v(1));
+    EXPECT_DOUBLE_EQ(vals[2], v(2));
+}
+
+TEST(Vector3TestSuite, TestMatrixToVector3ConversionConstruction)
+{
+    int vals[3] = {1, 2, 3};
+    matrix::Matrix<int, 3, 1> m_type(vals);
+    matrix::Vector3<int> v(m_type);
+    EXPECT_EQ(vals[0], v(0));
+    EXPECT_EQ(vals[1], v(1));
+    EXPECT_EQ(vals[2], v(2));
+}
+
+TEST(Vector3TestSuite, TestAddition)
 {
     matrix::Vector3<int> v1(1, 2, 3);
     matrix::Vector3<int> v2(4, 5, 6);
@@ -62,7 +85,7 @@ TEST(Vector3TestSuite, TestVectorAddition)
     EXPECT_EQ(9, result(2));
 }
 
-TEST(Vector3TestSuite, TestVectorSubtraction)
+TEST(Vector3TestSuite, TestSubtraction)
 {
     matrix::Vector3<int> v1(7, -2, 4);
     matrix::Vector3<int> v2(2, 3, 1);
@@ -72,7 +95,7 @@ TEST(Vector3TestSuite, TestVectorSubtraction)
     EXPECT_EQ(3, result(2));
 }
 
-TEST(Vector3TestSuite, TestVectorMultiplication)
+TEST(Vector3TestSuite, TestMultiplication)
 {
     matrix::Vector3<int> v1(3, 6, -2);
     matrix::Vector3<int> v2(7, 1, 0);
@@ -80,7 +103,7 @@ TEST(Vector3TestSuite, TestVectorMultiplication)
     EXPECT_EQ(27, result);
 }
 
-TEST(Vector3TestSuite, TestVectorCompoundAddition)
+TEST(Vector3TestSuite, TestCompoundAddition)
 {
     matrix::Vector3<int> v1(1, 2, 3);
     matrix::Vector3<int> v2(4, 5, 6);
@@ -91,7 +114,7 @@ TEST(Vector3TestSuite, TestVectorCompoundAddition)
     EXPECT_EQ(9, v1(2));
 }
 
-TEST(Vector3TestSuite, TestVectorCompoundSubtraction)
+TEST(Vector3TestSuite, TestCompoundSubtraction)
 {
     matrix::Vector3<int> v1(7, -2, 4);
     matrix::Vector3<int> v2(2, 3, 1);

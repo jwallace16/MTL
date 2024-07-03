@@ -52,15 +52,24 @@ TEST(MatrixTestSuite, TestDefaultCreation)
 
 TEST(MatrixTestSuite, Test2DArrayCreation)
 {
-    double values[2][3] = {{1.1, 1.2, 1.3}, {2.1, 2.2, 2.3}};
-    matrix::Matrix<double, 2, 3> m(values);
-    EXPECT_DOUBLE_EQ(1.1, m(0,0));
-    EXPECT_DOUBLE_EQ(1.2, m(0,1));
-    EXPECT_DOUBLE_EQ(1.3, m(0,2));
-    EXPECT_DOUBLE_EQ(2.1, m(1,0));
-    EXPECT_DOUBLE_EQ(2.2, m(1,1));
-    EXPECT_DOUBLE_EQ(2.3, m(1,2));
-    EXPECT_NE(values[0][1], m(1,0));
+    double vals1[2][3] = {{1.1, 1.2, 1.3}, {2.1, 2.2, 2.3}};
+    matrix::Matrix<double, 2, 3> m1(vals1);
+    EXPECT_DOUBLE_EQ(1.1, m1(0,0));
+    EXPECT_DOUBLE_EQ(1.2, m1(0,1));
+    EXPECT_DOUBLE_EQ(1.3, m1(0,2));
+    EXPECT_DOUBLE_EQ(2.1, m1(1,0));
+    EXPECT_DOUBLE_EQ(2.2, m1(1,1));
+    EXPECT_DOUBLE_EQ(2.3, m1(1,2));
+    EXPECT_NE(vals1[0][1], m1(1,0));
+    
+    double vals2[3][2] = {{1.1, 1.2}, {2.1, 2.2}, {3.1, 3.2}};
+    matrix::Matrix<double, 3, 2> m2(vals2);
+    EXPECT_DOUBLE_EQ(1.1, m2(0,0));
+    EXPECT_DOUBLE_EQ(1.2, m2(0,1));
+    EXPECT_DOUBLE_EQ(2.1, m2(1,0));
+    EXPECT_DOUBLE_EQ(2.2, m2(1,1));
+    EXPECT_DOUBLE_EQ(3.1, m2(2,0));
+    EXPECT_DOUBLE_EQ(3.2, m2(2,1));
 }
 
 TEST(MatrixTestSuite, TestFlatArrayCreation)
@@ -73,6 +82,30 @@ TEST(MatrixTestSuite, TestFlatArrayCreation)
     EXPECT_DOUBLE_EQ(3.0, m(1,0));
     EXPECT_DOUBLE_EQ(4.0, m(1,1));
     EXPECT_DOUBLE_EQ(5.0, m(1,2));
+}
+
+TEST(MatrixTestSuite, TestInitializerListConstructor)
+{
+    matrix::Matrix<double, 2, 2> m1 = {{1.1, 1.2}, {2.1, 2.2}};
+    EXPECT_DOUBLE_EQ(1.1, m1(0,0));
+    EXPECT_DOUBLE_EQ(1.2, m1(0,1));
+    EXPECT_DOUBLE_EQ(2.1, m1(1,0));
+    EXPECT_DOUBLE_EQ(2.2, m1(1,1));
+
+    matrix::Matrix<double, 3, 2> m2 = {{1.1, 1.2}, {2.1, 2.2}, {3.1, 3.2}};
+    EXPECT_DOUBLE_EQ(1.1, m2(0,0));
+    EXPECT_DOUBLE_EQ(1.2, m2(0,1));
+    EXPECT_DOUBLE_EQ(2.1, m2(1,0));
+    EXPECT_DOUBLE_EQ(2.2, m2(1,1));
+    EXPECT_DOUBLE_EQ(3.1, m2(2,0));
+    EXPECT_DOUBLE_EQ(3.2, m2(2,1));
+
+    matrix::Matrix<int, 2, 2> m3;
+    m3 = {{1, 2}, {3, 4}};
+    EXPECT_EQ(1, m3(0,0));
+    EXPECT_EQ(2, m3(0,1));
+    EXPECT_EQ(3, m3(1,0));
+    EXPECT_EQ(4, m3(1,1));
 }
 
 TEST(MatrixTestSuite, TestCopyConstructor)

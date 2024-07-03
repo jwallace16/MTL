@@ -10,8 +10,8 @@
 //!
 //! This class will utilize a ZYX (3-2-1) right-handed rotation sequence, with:
 //! Z axis: psi (yaw)
-//! Y axis: theta (pitch)
-//! X axis: phi (roll)
+//! Y' axis: theta (pitch)
+//! X'' axis: phi (roll)
 //!
 //! @author David Wallace <jdavidwallace1@gmail.com>
 ///////////////////////////////////////////////////////////////////////////////
@@ -77,9 +77,11 @@ public:
 
     //! Get yaw/heading/psi
     inline const T getPsi() const { return psi; }
+    inline const T getHeading() const { return psi; }
 
     //! Get pitch/theta
     inline const T getTheta() const { return theta; }
+    inline const T getPitch() const { return theta; }
 
     //! Get roll/phi
     inline const T getPhi() const { return phi; }
@@ -121,13 +123,27 @@ Euler<T>::Euler(T _psi, T _theta, T _phi):
 template<class T>
 Euler<T>::Euler(const DCM<T> &dcm)
 {
-    // TODO: need to account for (see Stevens and Lewis page 12):
+    // need to account for (see Stevens and Lewis page 12):
     // -pi < phi <= +pi
     // -pi/2 <= theta <= pi/2
     // -pi < psi <= pi
-    phi = atan2(dcm(1,2), dcm(2,2));
-    theta = -asin(dcm(0,2));
-    psi = atan2(dcm(0,1), dcm(0,0));
+    //
+    // Note: Special case when handling theta = -pi/2
+    theta = -std::asin(dcm(0,2));
+    if(std::fabs(theta - M_PI/2.0) < 1.0e-6)
+    {
+        phi = 0.0;
+        psi = std::atan2(dcm(2,1), dcm(2,0));
+    }
+    else if(std::fabs(theta + M_PI/2.0) < 1.0e-6)
+    {
+        //
+    }
+    else
+    {
+        phi = atan2(dcm(1,2), dcm(2,2));
+        psi = atan2(dcm(0,1), dcm(0,0));
+    }
 }
 
 //! Create from quaternion

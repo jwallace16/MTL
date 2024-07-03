@@ -67,6 +67,38 @@ TEST(SquareMatrixTestSuite, TestFlatArrayConstructor)
     }
 }
 
+TEST(SquareMatrixTestSuite, TestInitializerListConstructor)
+{
+    matrix::SquareMatrix<double, 3> m1 = {{1.1, 1.2, 1.3}, {2.1, 2.2, 2.3}, {3.1, 3.2, 3.3}};
+    EXPECT_DOUBLE_EQ(1.1, m1(0,0));
+    EXPECT_DOUBLE_EQ(1.2, m1(0,1));
+    EXPECT_DOUBLE_EQ(1.3, m1(0,2));
+    EXPECT_DOUBLE_EQ(2.1, m1(1,0));
+    EXPECT_DOUBLE_EQ(2.2, m1(1,1));
+    EXPECT_DOUBLE_EQ(2.3, m1(1,2));
+    EXPECT_DOUBLE_EQ(3.1, m1(2,0));
+    EXPECT_DOUBLE_EQ(3.2, m1(2,1));
+    EXPECT_DOUBLE_EQ(3.3, m1(2,2));
+
+    matrix::SquareMatrix<int, 4> m2 = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
+    EXPECT_EQ(1, m2(0,0));
+    EXPECT_EQ(2, m2(0,1));
+    EXPECT_EQ(3, m2(0,2));
+    EXPECT_EQ(4, m2(0,3));
+    EXPECT_EQ(5, m2(1,0));
+    EXPECT_EQ(6, m2(1,1));
+    EXPECT_EQ(7, m2(1,2));
+    EXPECT_EQ(8, m2(1,3));
+    EXPECT_EQ(9, m2(2,0));
+    EXPECT_EQ(10, m2(2,1));
+    EXPECT_EQ(11, m2(2,2));
+    EXPECT_EQ(12, m2(2,3));
+    EXPECT_EQ(13, m2(3,0));
+    EXPECT_EQ(14, m2(3,1));
+    EXPECT_EQ(15, m2(3,2));
+    EXPECT_EQ(16, m2(3,3));
+}
+
 TEST(SquareMatrixTestSuite, TestMatrixAssignment)
 {
     double vals[4] = {1.1, 1.2, 2.1, 2.2};

@@ -9,6 +9,8 @@
 #ifndef _SQUAREMATRIX_HPP__
 #define _SQUAREMATRIX_HPP__
 
+#include <initializer_list>
+
 #include "Matrix.hpp"
 
 namespace matrix
@@ -33,6 +35,9 @@ public:
     //! Construct with a flat array
     explicit SquareMatrix(const T values[M*M]);
 
+    //! Construct using initializer list
+    SquareMatrix(std::initializer_list<std::initializer_list<T>> list);
+
     //! Construct with Matrix type
     SquareMatrix(const Matrix<T, M, M> &other);
 
@@ -44,6 +49,12 @@ public:
 
     //! Obtain the trace of the matrix
     T trace() const;
+
+    //! Compute the determinant
+    T determinant() const;
+
+    //! LU Decomposition
+    void LU_decomposition(SquareMatrix<T, M> &L, SquareMatrix<T, M> &U);
 };
 
 //! Default constructor
@@ -64,6 +75,13 @@ SquareMatrix<T,M>::SquareMatrix(const T values[M][M]):
 template<class T, size_t M>
 SquareMatrix<T,M>::SquareMatrix(const T values[M*M]):
     Matrix<T, M, M>(values)
+{
+}
+
+//! Construct using initializer list
+template<class T, size_t M>
+SquareMatrix<T,M>::SquareMatrix(std::initializer_list<std::initializer_list<T>> list):
+    Matrix<T, M, M>(list)
 {
 }
 
@@ -116,6 +134,34 @@ T SquareMatrix<T, M>::trace() const
         tr += this->data[i*M+i];
     }
     return tr;
+}
+
+//! Compute the determinant
+template<class T, size_t M>
+T SquareMatrix<T, M>::determinant() const
+{
+    SquareMatrix<T, M> &self = *this;
+    T det = 0;
+    if(1 == M)
+    {
+        det = this->data[0];
+    }
+    else if(2 == M || 3 == M)
+    {
+        det = determinant(self);
+    }
+    else
+    {
+
+    }
+    return det;
+}
+
+//! LU decomposition
+template<class T, size_t M>
+void SquareMatrix<T, M>::LU_decomposition(SquareMatrix<T, M> &L, SquareMatrix<T, M> &U)
+{
+    //
 }
 
 //! Return the determinant of a 2x2 matrix

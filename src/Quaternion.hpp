@@ -163,9 +163,22 @@ Quaternion<T>::Quaternion(const Vector3<T> &axis, T angle)
 
 //! Construct from Euler angles
 template<class T>
-Quaternion<T>::Quaternion(const Euler<T> &eulerAngles)
+Quaternion<T>::Quaternion(const Euler<T> &euler)
 {
-    //
+    //! Stevens & Lewis, Example 1.8-1, Eq 1
+    T phi_2 = euler.getPhi() * 0.5;
+    T theta_2 = euler.getTheta() * 0.5;
+    T psi_2 = euler.getPsi() * 0.5;
+    T c_phi_2 = std::cos(phi_2);
+    T s_phi_2 = std::sin(phi_2);
+    T c_theta_2 = std::cos(theta_2);
+    T s_theta_2 = std::sin(theta_2);
+    T c_psi_2 = std::cos(psi_2);
+    T s_psi_2 = std::sin(psi_2);
+    this->data[0] = c_phi_2*c_theta_2*c_psi_2 + s_phi_2*s_theta_2*s_psi_2;
+    this->data[1] = s_phi_2*c_theta_2*c_psi_2 - c_phi_2*s_theta_2*s_psi_2;
+    this->data[2] = c_phi_2*s_theta_2*c_psi_2 + s_phi_2*c_theta_2*s_psi_2;
+    this->data[3] = c_phi_2*c_theta_2*s_psi_2 - s_phi_2*s_theta_2*c_psi_2;
 }
 
 //! Construct from Direction Cosine Matrix
