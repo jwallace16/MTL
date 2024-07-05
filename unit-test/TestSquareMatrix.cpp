@@ -404,18 +404,102 @@ TEST(SquareMatrixTestSuite, TestTrace)
     EXPECT_EQ(5, m.trace());
 }
 
+TEST(SquareMatrixTestSuite, TestMinor)
+{
+    matrix::SquareMatrix<int, 3> m = {{1, 2, 3}, {4, 5, 6}, {7, 8 ,9}};
+    EXPECT_EQ(1, m(0,0));
+    EXPECT_EQ(2, m(0,1));
+    EXPECT_EQ(3, m(0,2));
+    EXPECT_EQ(4, m(1,0));
+    EXPECT_EQ(5, m(1,1));
+    EXPECT_EQ(6, m(1,2));
+    EXPECT_EQ(7, m(2,0));
+    EXPECT_EQ(8, m(2,1));
+    EXPECT_EQ(9, m(2,2));
+
+    matrix::SquareMatrix<int, 2> minor1 = m.minor(0,0);
+    EXPECT_EQ(5, minor1(0,0));
+    EXPECT_EQ(6, minor1(0,1));
+    EXPECT_EQ(8, minor1(1,0));
+    EXPECT_EQ(9, minor1(1,1));
+
+    matrix::SquareMatrix<int, 2> minor2 = m.minor(0,1);
+    EXPECT_EQ(4, minor2(0,0));
+    EXPECT_EQ(6, minor2(0,1));
+    EXPECT_EQ(7, minor2(1,0));
+    EXPECT_EQ(9, minor2(1,1));
+
+    matrix::SquareMatrix<int, 2> minor3 = m.minor(0,2);
+    EXPECT_EQ(4, minor3(0,0));
+    EXPECT_EQ(5, minor3(0,1));
+    EXPECT_EQ(7, minor3(1,0));
+    EXPECT_EQ(8, minor3(1,1));
+
+    matrix::SquareMatrix<int, 2> minor4 = m.minor(1,0);
+    EXPECT_EQ(2, minor4(0,0));
+    EXPECT_EQ(3, minor4(0,1));
+    EXPECT_EQ(8, minor4(1,0));
+    EXPECT_EQ(9, minor4(1,1));
+    
+    matrix::SquareMatrix<int, 2> minor5 = m.minor(1,1);
+    EXPECT_EQ(1, minor5(0,0));
+    EXPECT_EQ(3, minor5(0,1));
+    EXPECT_EQ(7, minor5(1,0));
+    EXPECT_EQ(9, minor5(1,1));
+
+    matrix::SquareMatrix<int, 2> minor6 = m.minor(1,2);
+    EXPECT_EQ(1, minor6(0,0));
+    EXPECT_EQ(2, minor6(0,1));
+    EXPECT_EQ(7, minor6(1,0));
+    EXPECT_EQ(8, minor6(1,1));
+
+    matrix::SquareMatrix<int, 2> minor7 = m.minor(2,0);
+    EXPECT_EQ(2, minor7(0,0));
+    EXPECT_EQ(3, minor7(0,1));
+    EXPECT_EQ(5, minor7(1,0));
+    EXPECT_EQ(6, minor7(1,1));
+
+    matrix::SquareMatrix<int, 2> minor8 = m.minor(2,1);
+    EXPECT_EQ(1, minor8(0,0));
+    EXPECT_EQ(3, minor8(0,1));
+    EXPECT_EQ(4, minor8(1,0));
+    EXPECT_EQ(6, minor8(1,1));
+
+    matrix::SquareMatrix<int, 2> minor9 = m.minor(2,2);
+    EXPECT_EQ(1, minor9(0,0));
+    EXPECT_EQ(2, minor9(0,1));
+    EXPECT_EQ(4, minor9(1,0));
+    EXPECT_EQ(5, minor9(1,1));
+}
+
+TEST(SquareMatrixTestSuite, Test1x1Determinant)
+{
+    matrix::SquareMatrix<int, 1> m = {{3}};
+    EXPECT_EQ(3, matrix::determinant<int>(m));
+}
+
 TEST(SquareMatrixTestSuite, Test2x2Determinant)
 {
-    int vals[2][2] = {{3, 5}, {8, 2}};
-    matrix::SquareMatrix<int, 2> m(vals);
-    EXPECT_EQ(-34, matrix::determinant<int>(m));
+    matrix::SquareMatrix<int, 2> m = {{1, 2}, {3, 4}};
+    EXPECT_EQ(-2, matrix::determinant<int>(m));
 }
 
 TEST(SquareMatrixTestSuite, Test3x3Determinant)
 {
-    int vals[3][3] = {{3, 2, -4}, {0, -7, 8}, {11, 2, 9}};
-    matrix::SquareMatrix<int, 3> m(vals);
-    EXPECT_EQ(-369, matrix::determinant<int>(m));
+    matrix::SquareMatrix<int, 3> m = {{5, -4, 2}, {0, -7, 8}, {4, -3, 5}};
+    EXPECT_EQ(-127, matrix::determinant<int>(m));
+}
+
+TEST(SquareMatrixTestSuite, Test4x4Determinant)
+{
+    matrix::SquareMatrix<int, 4> m = {{2, 2, 6, 8}, {5, 3, -4, 5}, {3, -7, 2, 0}, {3, 5, 7, 2}};
+    EXPECT_EQ(3508, matrix::determinant<int>(m));
+}
+
+TEST(SquareMatrixTestSuite, Test5x5Determinant)
+{
+    matrix::SquareMatrix<int, 5> m = {{3, -3, 2, 1, 4}, {4, 1, -3, 0, 4}, {2, 1, 0, 5, -2}, {3, 7, 0, 8, -1}, {4, 5, 2, 0, 2}};
+    EXPECT_EQ(3523, matrix::determinant<int>(m));
 }
 
 TEST(SquareMatrixTestSuite, Test2x2InverseSuccess)
