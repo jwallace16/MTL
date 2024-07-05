@@ -9,6 +9,9 @@
 #ifndef _SQUAREMATRIX_HPP__
 #define _SQUAREMATRIX_HPP__
 
+#include <cmath>
+#include <initializer_list>
+
 #include "Matrix.hpp"
 
 namespace matrix
@@ -33,6 +36,9 @@ public:
     //! Construct with a flat array
     explicit SquareMatrix(const T values[M*M]);
 
+    //! Construct using initializer list
+    SquareMatrix(std::initializer_list<std::initializer_list<T>> list);
+
     //! Construct with Matrix type
     SquareMatrix(const Matrix<T, M, M> &other);
 
@@ -44,6 +50,12 @@ public:
 
     //! Obtain the trace of the matrix
     T trace() const;
+
+    //! Generate the minor matrix given a column index
+    SquareMatrix<T, M-1> minor(const size_t row, const size_t col) const;
+
+    //! LU Decomposition
+    void LU_decomposition(SquareMatrix<T, M> &L, SquareMatrix<T, M> &U);
 };
 
 //! Default constructor
@@ -64,6 +76,13 @@ SquareMatrix<T,M>::SquareMatrix(const T values[M][M]):
 template<class T, size_t M>
 SquareMatrix<T,M>::SquareMatrix(const T values[M*M]):
     Matrix<T, M, M>(values)
+{
+}
+
+//! Construct using initializer list
+template<class T, size_t M>
+SquareMatrix<T,M>::SquareMatrix(std::initializer_list<std::initializer_list<T>> list):
+    Matrix<T, M, M>(list)
 {
 }
 
@@ -118,6 +137,48 @@ T SquareMatrix<T, M>::trace() const
     return tr;
 }
 
+//! Generate the minor matrix given a column index
+template<class T, size_t M>
+SquareMatrix<T, M-1> SquareMatrix<T, M>::minor(const size_t row, const size_t col) const
+{
+    // This method assumes a couple of things:
+    // 1. That the matrix is 2x2 or bigger
+    // 2. And that we're selecting a column index at row 0
+    assert(M >= 2); // TODO raise an exception?
+
+    T minordata[(M-1)*(M-1)];
+    size_t datactr = 0;
+    for(size_t i = 0; i < M; ++i)
+    {
+        for(size_t j = 0; j < M; ++j)
+        {
+            if(row != i && col != j)
+            {
+                // minordata[datactr] = self(i,j);
+                minordata[datactr] = this->data[i*M+j];
+                ++datactr;
+            }
+        }
+    }
+
+    SquareMatrix<T, M-1> minor(minordata);
+    return minor;
+}
+
+//! LU decomposition
+template<class T, size_t M>
+void SquareMatrix<T, M>::LU_decomposition(SquareMatrix<T, M> &L, SquareMatrix<T, M> &U)
+{
+    //
+}
+
+//! Return the determinant of a trivial 1x1 matrix
+template<class T>
+T determinant(const SquareMatrix<T, 1> &A)
+{
+    return A(0,0);
+}
+
 //! Return the determinant of a 2x2 matrix
 template<class T>
 T determinant(const SquareMatrix<T, 2> &A)
@@ -132,6 +193,19 @@ T determinant(const SquareMatrix<T, 3> &A)
     return ((A(0,0)*(A(1,1)*A(2,2) - A(1,2)*A(2,1)))
            -(A(0,1)*(A(1,0)*A(2,2) - A(1,2)*A(2,0)))
            +(A(0,2)*(A(1,0)*A(2,1) - A(1,1)*A(2,0))));
+}
+
+//! Return the determinant of a MxM matrix
+template<class T, size_t M>
+T determinant(const SquareMatrix<T, M> &A)
+{
+    T det = 0;
+    for(size_t i = 0; i < M; ++i)
+    {
+        SquareMatrix<T, M-1> minor = A.minor(0,i);
+        det += std::pow(-1.0, i)*A(0, i)*matrix::determinant<T>(minor);
+    }
+    return det;
 }
 
 //! Compute the inverse of a 2x2 matrix

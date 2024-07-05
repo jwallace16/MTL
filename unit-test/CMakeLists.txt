@@ -18,6 +18,7 @@ set(TEST_SOURCES
     TestQuaternion.cpp
     TestDCM.cpp
     TestEuler.cpp
+    TestAxisAngle.cpp
 )
 
 # Modern CMake for C++, chapter08/04-gtest/test/CMakeLists.txt

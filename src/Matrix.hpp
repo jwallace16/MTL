@@ -34,6 +34,9 @@ public:
     //! Constructor initializing with flat array of data
     explicit Matrix(const T values[M*N]);
 
+    //! Construct using initializer list
+    Matrix(std::initializer_list<std::initializer_list<T>> list);
+
     //! Copy constructor
     Matrix(const Matrix &other) = default;
 
@@ -164,6 +167,33 @@ Matrix<T,M,N>::Matrix(const T values[M*N])
     for(size_t i = 0; i < M*N; ++i)
     {
         data[i] = values[i];
+    }
+}
+
+//! Construct using initializer list
+template<class T, size_t M, size_t N>
+Matrix<T,M,N>::Matrix(std::initializer_list<std::initializer_list<T>> list)
+{
+    size_t listcols = static_cast<size_t>(list.begin()->size());
+    size_t listrows = static_cast<size_t>(list.size());
+    if(listrows != M || listcols != N)
+    {
+        char message[120];
+        snprintf(message, 120, "ERROR: Invalid number of arguments supplied. Expected [%lu, %lu], Received [%lu, %lu]\n", M, N, listrows, listcols);
+        throw std::invalid_argument(message);
+    }
+
+    auto outeriter = list.begin();
+    for(size_t i = 0; i < listrows; ++i)
+    {
+        auto inneriter = (outeriter+i)->begin();
+        for(size_t j = 0; j < listcols; ++j)
+        {
+            // Keep for posterity
+            // data[i*N+j] = ((list.begin()+i)->begin())[j];
+            // data[i*N+j] = ((iter+i)->begin())[j];
+            data[i*N+j] = inneriter[j];
+        }
     }
 }
 

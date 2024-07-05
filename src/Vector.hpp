@@ -11,6 +11,8 @@
 
 #include "Matrix.hpp"
 
+#include <initializer_list>
+
 namespace matrix
 {
 
@@ -23,6 +25,9 @@ public:
 
     //! Constructor with array of initial values
     explicit Vector(const T values[M]);
+
+    //! Constructor with initializer list
+    Vector(std::initializer_list<T> list);
 
     //! Construct with other vector/matrix
     Vector(const Vector<T, M> &other);
@@ -73,6 +78,25 @@ template<class T, size_t M>
 Vector<T,M>::Vector(const T values[M]):
     Matrix<T, M, 1>(values)
 {
+}
+
+//! Constructor with initializer list
+template<class T, size_t M>
+Vector<T,M>::Vector(std::initializer_list<T> list)
+{
+    size_t listsize = static_cast<size_t>(list.size());
+    if(listsize != M)
+    {
+        char message[120];
+        snprintf(message, 120, "ERROR: Invalid number of arguments supplied. Expected [%lu], Received [%lu]\n", M, listsize);
+        throw std::invalid_argument(message);
+    }
+
+    auto iter = list.begin();
+    for(size_t i = 0; i < listsize; ++i)
+    {
+        this->data[i] = iter[i];
+    }
 }
 
 //! Construct with other vector/matrix
