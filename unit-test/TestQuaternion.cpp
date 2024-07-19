@@ -61,7 +61,93 @@ TEST(QuaternionTestSuite, TestVector3AndAngleConstructor)
 
 TEST(QuaternionTestSuite, TestQuaternionConstructorEulerAngles)
 {
-    //
+    double deg2rad = M_PI / 180.0;
+    double angle1 = 32.0 * deg2rad;
+    double angle2 = 44.0 * deg2rad;
+    double angle3 = -100.0 * deg2rad;
+    matrix::Euler<double> e1(angle1, angle2, angle3, RotationSequence::ZXZ_313);
+    matrix::Quaternion<double> q1(e1);
+    EXPECT_DOUBLE_EQ(0.76867025210227624, q1(0));
+    EXPECT_DOUBLE_EQ(0.15236622828004923, q1(1));
+    EXPECT_DOUBLE_EQ(0.34222015181807508, q1(2));
+    EXPECT_DOUBLE_EQ(-0.51847463168640051, q1(3));
+
+    matrix::Euler<double> e2(angle1, angle2, angle3, RotationSequence::XYX_121);
+    matrix::Quaternion<double> q2(e2);
+    EXPECT_DOUBLE_EQ(0.7686702521022762, q2(0));
+    EXPECT_DOUBLE_EQ(-0.51847463168640051, q2(1));
+    EXPECT_DOUBLE_EQ(0.15236622828004923, q2(2));
+    EXPECT_DOUBLE_EQ(0.34222015181807508, q2(3));
+
+    matrix::Euler<double> e3(angle1, angle2, angle3, RotationSequence::YZY_232);
+    matrix::Quaternion<double> q3(e3);
+    EXPECT_DOUBLE_EQ(0.7686702521022762, q3(0));
+    EXPECT_DOUBLE_EQ(0.34222015181807508, q3(1));
+    EXPECT_DOUBLE_EQ(-0.51847463168640051, q3(2));
+    EXPECT_DOUBLE_EQ(0.15236622828004923, q3(3));
+
+    matrix::Euler<double> e4(angle1, angle2, angle3, RotationSequence::ZYZ_323);
+    matrix::Quaternion<double> q4(e4);
+    EXPECT_DOUBLE_EQ(0.7686702521022762, q4(0));
+    EXPECT_DOUBLE_EQ(-0.34222015181807508, q4(1));
+    EXPECT_DOUBLE_EQ(0.15236622828004923, q4(2));
+    EXPECT_DOUBLE_EQ(-0.51847463168640051, q4(3));
+
+    matrix::Euler<double> e5(angle1, angle2, angle3, RotationSequence::XZX_131);
+    matrix::Quaternion<double> q5(e5);
+    EXPECT_DOUBLE_EQ(0.7686702521022762, q5(0));
+    EXPECT_DOUBLE_EQ(-0.51847463168640051, q5(1));
+    EXPECT_DOUBLE_EQ(-0.34222015181807508, q5(2));
+    EXPECT_DOUBLE_EQ(0.15236622828004923, q5(3));
+
+    matrix::Euler<double> e6(angle1, angle2, angle3, RotationSequence::YXY_212);
+    matrix::Quaternion<double> q6(e6);
+    EXPECT_DOUBLE_EQ(0.7686702521022762, q6(0));
+    EXPECT_DOUBLE_EQ(0.15236622828004923, q6(1));
+    EXPECT_DOUBLE_EQ(-0.51847463168640051, q6(2));
+    EXPECT_DOUBLE_EQ(-0.34222015181807508, q6(3));
+
+    matrix::Euler<double> e7(angle1, angle2, angle3, RotationSequence::XYZ_123);
+    matrix::Quaternion<double> q7(e7);
+    EXPECT_DOUBLE_EQ(0.65199330660572219, q7(0));
+    EXPECT_DOUBLE_EQ(-0.11157376669847921, q7(1));
+    EXPECT_DOUBLE_EQ(0.42723988636519528, q7(2));
+    EXPECT_DOUBLE_EQ(-0.61637821361945078, q7(3));
+
+    matrix::Euler<double> e8(angle1, angle2, angle3, RotationSequence::YZX_231);
+    matrix::Quaternion<double> q8(e8);
+    EXPECT_DOUBLE_EQ(0.65199330660572219, q8(0));
+    EXPECT_DOUBLE_EQ(-0.61637821361945078, q8(1));
+    EXPECT_DOUBLE_EQ(-0.11157376669847921, q8(2));
+    EXPECT_DOUBLE_EQ(0.42723988636519528, q8(3));
+
+    matrix::Euler<double> e9(angle1, angle2, angle3, RotationSequence::ZXY_312);
+    matrix::Quaternion<double> q9(e9);
+    EXPECT_DOUBLE_EQ(0.65199330660572219, q9(0));
+    EXPECT_DOUBLE_EQ(0.42723988636519528, q9(1));
+    EXPECT_DOUBLE_EQ(-0.61637821361945078, q9(2));
+    EXPECT_DOUBLE_EQ(-0.11157376669847921, q9(3));
+
+    matrix::Euler<double> e10(angle1, angle2, angle3, RotationSequence::XZY_132);
+    matrix::Quaternion<double> q10(e10);
+    EXPECT_DOUBLE_EQ(0.49379659401713027, q10(0));
+    EXPECT_DOUBLE_EQ(0.44012373375112523, q10(1));
+    EXPECT_DOUBLE_EQ(-0.74912101680599641, q10(2));
+    EXPECT_DOUBLE_EQ(0.035689282783495146, q10(3));
+
+    matrix::Euler<double> e11(angle1, angle2, angle3, RotationSequence::ZYX_321);
+    matrix::Quaternion<double> q11(e11);
+    EXPECT_DOUBLE_EQ(0.49379659401713027, q11(0));
+    EXPECT_DOUBLE_EQ(-0.74912101680599641, q11(1));
+    EXPECT_DOUBLE_EQ(0.035689282783495146, q11(2));
+    EXPECT_DOUBLE_EQ(0.44012373375112523, q11(3));
+
+    matrix::Euler<double> e12(angle1, angle2, angle3, RotationSequence::YXZ_213);
+    matrix::Quaternion<double> q12(e12);
+    EXPECT_DOUBLE_EQ(0.49379659401713027, q12(0));
+    EXPECT_DOUBLE_EQ(0.035689282783495146, q12(1));
+    EXPECT_DOUBLE_EQ(0.44012373375112523, q12(2));
+    EXPECT_DOUBLE_EQ(-0.74912101680599641, q12(3));
 }
 
 TEST(QuaternionTestSuite, TestQuaternionConstructorDCMx)
@@ -542,13 +628,12 @@ TEST(QuaternionTestSuite, TestQuaternionConstructorDCMzyx)
 
 TEST(QuaternionTestSuite, TestQuaternionConstructorVector4)
 {
-    double vals2[4] = {1.0, 0.0, 0.0, 0.0};
-    matrix::Vector<double, 4> v2(vals2);
-    matrix::Quaternion<double> q5(v2);
-    EXPECT_DOUBLE_EQ(1.0, q5(0));
-    EXPECT_DOUBLE_EQ(0.0, q5(1));
-    EXPECT_DOUBLE_EQ(0.0, q5(2));
-    EXPECT_DOUBLE_EQ(0.0, q5(3));
+    matrix::Vector<double, 4> v = {0.0, 0.0, 1.0, 0.0};
+    matrix::Quaternion<double> q(v);
+    EXPECT_DOUBLE_EQ(0.0, q(0));
+    EXPECT_DOUBLE_EQ(0.0, q(1));
+    EXPECT_DOUBLE_EQ(1.0, q(2));
+    EXPECT_DOUBLE_EQ(0.0, q(3));
 }
 
 TEST(QuaternionTestSuite, TestQuaternionConstructorTwoVectors)
@@ -603,17 +688,20 @@ TEST(QuaternionTestSuite, TestQuaternionSubtraction)
 
 TEST(QuaternionTestSuite, TestQuaternionMultiplication)
 {
-    double vals1[4] = {1.3, 5.1, 3.2, 1.1};
-    matrix::Quaternion<double> q1(vals1);
-    
-    double vals2[4] = {0.2, 4.4, 6.1, -2.0};
-    matrix::Quaternion<double> q2(vals2);
+    matrix::Quaternion<double> q1 = {1.3, 5.1, 3.2, 1.1};
+    matrix::Quaternion<double> q2 = {0.2, 4.4, 6.1, -2.0};
 
     matrix::Quaternion<double> result = q1 * q2;
     EXPECT_DOUBLE_EQ(-39.5, result(0));
     EXPECT_DOUBLE_EQ(-6.37, result(1));
     EXPECT_DOUBLE_EQ(23.61, result(2));
     EXPECT_DOUBLE_EQ(14.65, result(3));
+
+    result.normalize();
+    EXPECT_DOUBLE_EQ(-0.81088463337871208, result(0));
+    EXPECT_DOUBLE_EQ(-0.13076797758537712, result(1));
+    EXPECT_DOUBLE_EQ(0.48468319478661748, result(2));
+    EXPECT_DOUBLE_EQ(0.30074581972147157, result(3));
 }
 
 TEST(QuaternionTestSuite, TestQuaternionCompoundAddition)
@@ -640,11 +728,8 @@ TEST(QuaternionTestSuite, TestQuaternionCompoundSubtraction)
 
 TEST(QuaternionTestSuite, TestQuaternionCompoundMultiplication)
 {
-    double vals1[4] = {1.3, 5.1, 3.2, 1.1};
-    matrix::Quaternion<double> q1(vals1);
-    
-    double vals2[4] = {0.2, 4.4, 6.1, -2.0};
-    matrix::Quaternion<double> q2(vals2);
+    matrix::Quaternion<double> q1 = {1.3, 5.1, 3.2, 1.1};
+    matrix::Quaternion<double> q2 = {0.2, 4.4, 6.1, -2.0};
 
     q1 *= q2;
     EXPECT_DOUBLE_EQ(-39.5, q1(0));
@@ -677,8 +762,7 @@ TEST(QuaternionTestSuite, TestScalarSubtraction)
 
 TEST(QuaternionTestSuite, TestQuaternionScalarMultiplication)
 {
-    double vals1[4] = {3.4, -2.3, 1.1, 0.5};
-    matrix::Quaternion<double> q1(vals1);
+    matrix::Quaternion<double> q1 = {3.4, -2.3, 1.1, 0.5};
     matrix::Quaternion<double> result1 = q1 * 4.3;
     EXPECT_DOUBLE_EQ(14.62, result1(0));
     EXPECT_DOUBLE_EQ(-9.89, result1(1));
@@ -690,4 +774,49 @@ TEST(QuaternionTestSuite, TestQuaternionScalarMultiplication)
     EXPECT_DOUBLE_EQ(-9.89, result2(1));
     EXPECT_DOUBLE_EQ(4.73, result2(2));
     EXPECT_DOUBLE_EQ(2.15, result2(3));
+}
+
+TEST(QuaternionTestSuite, TestQuaternionWXYZ)
+{
+    matrix::Quaternion<double> q = {3.4, -2.3, 1.1, 0.5};
+    EXPECT_DOUBLE_EQ(3.4, q.w());
+    EXPECT_DOUBLE_EQ(-2.3, q.x());
+    EXPECT_DOUBLE_EQ(1.1, q.y());
+    EXPECT_DOUBLE_EQ(0.5, q.z());
+}
+
+TEST(QuaternionTestSuite, TestQuaternionScalarVectorReturns)
+{
+    matrix::Quaternion<double> q = {3.4, -2.3, 1.1, 0.5};
+    double scalar = q.scalar();
+    matrix::Vector3<double> vector = q.vector();
+    EXPECT_DOUBLE_EQ(3.4, scalar);
+    EXPECT_DOUBLE_EQ(-2.3, vector(0));
+    EXPECT_DOUBLE_EQ(1.1, vector(1));
+    EXPECT_DOUBLE_EQ(0.5, vector(2));
+}
+
+TEST(QuaternionTestSuite, TestAsMatrixRepresentation)
+{
+    matrix::Quaternion<double> q = {-39.5, -6.37, 23.61, 14.65};
+    matrix::SquareMatrix<double, 4> m = q.asMatrix();
+    EXPECT_DOUBLE_EQ(-39.5, m(0,0));
+    EXPECT_DOUBLE_EQ(-6.37, m(0,1));
+    EXPECT_DOUBLE_EQ(23.61, m(0,2));
+    EXPECT_DOUBLE_EQ(14.65, m(0,3));
+
+    EXPECT_DOUBLE_EQ(6.37, m(1,0));
+    EXPECT_DOUBLE_EQ(-39.5, m(1,1));
+    EXPECT_DOUBLE_EQ(-14.65, m(1,2));
+    EXPECT_DOUBLE_EQ(23.61, m(1,3));
+
+    EXPECT_DOUBLE_EQ(-23.61, m(2,0));
+    EXPECT_DOUBLE_EQ(14.65, m(2,1));
+    EXPECT_DOUBLE_EQ(-39.5, m(2,2));
+    EXPECT_DOUBLE_EQ(6.37, m(2,3));
+
+    EXPECT_DOUBLE_EQ(-14.65, m(3,0));
+    EXPECT_DOUBLE_EQ(-23.61, m(3,1));
+    EXPECT_DOUBLE_EQ(-6.37, m(3,2));
+    EXPECT_DOUBLE_EQ(-39.5, m(3,3));
 }

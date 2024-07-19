@@ -23,6 +23,7 @@
 #include "Vector3.hpp"
 #include "DCM.hpp"
 #include "Quaternion.hpp"
+#include "RotationSequence.hpp"
 
 namespace matrix
 {
@@ -33,32 +34,12 @@ class DCM;
 template<class T>
 class Quaternion;
 
-#if 0
-enum class EulerSequence
-{
-    // "Proper" Euler Angles
-    ZXZ_313 = 0,
-    XYX_121,
-    YZY_232,
-    ZYZ_323,
-    XZX_131,
-    YXY_212,
-    // Tait-Bryan angles
-    XYZ_123,
-    YZX_231,
-    ZXY_312,
-    XZY_132,
-    ZYX_321,
-    YXZ_213
-};
-#endif
-
 template<class T>
 class Euler
 {
 public:
     //! Default constructor
-    Euler();
+    Euler(RotationSequence _seq = RotationSequence::ZYX_321);
 
     //! Copy constructor from Vector
     // Euler(const Vector<T, 3> &other, EulerSequence seq = EulerSequence::ZYX_321);
@@ -67,62 +48,60 @@ public:
     // Euler(const Matrix<T, 3, 1> &other, EulerSequence seq = EulerSequence::ZYX_321);
 
     //! Create from provided angles
-    Euler(T _psi, T _theta, T _phi);
+    // Euler(T _psi, T _theta, T _phi);
+    Euler(T _angle1, T _angle2, T _angle3, RotationSequence _seq = RotationSequence::ZYX_321);
 
     //! Create from DCM
-    Euler(const DCM<T> &dcm);
+    Euler(const DCM<T> &dcm, RotationSequence _seq = RotationSequence::ZYX_321);
 
     //! Create from quaternion
-    Euler(const Quaternion<T> &quaternion);
+    Euler(const Quaternion<T> &quaternion, RotationSequence _seq = RotationSequence::ZYX_321);
 
-    //! Get yaw/heading/psi
-    inline const T getPsi() const { return psi; }
-    inline const T getHeading() const { return psi; }
+    //! Get rotation sequence
+    inline const RotationSequence getRotatationSequence() const { return seq; }
 
-    //! Get pitch/theta
-    inline const T getTheta() const { return theta; }
-    inline const T getPitch() const { return theta; }
+    //! Get angle-1, -2, -3
+    inline const T getAngle1() const { return angle1; }
+    inline const T getAngle2() const { return angle2; }
+    inline const T getAngle3() const { return angle3; }
 
-    //! Get roll/phi
-    inline const T getPhi() const { return phi; }
-
-    //! Assign yaw/psi
-    inline T& Psi() { return psi; }
-
-    //! Assign pitch/theta
-    inline T& Theta() { return theta; }
-
-    //! Assign roll/phi
-    inline T& Phi() { return phi; }
+    //! Assign angle-1, -2, -3
+    inline T& setAngle1(){ return angle1; }
+    inline T& setAngle2(){ return angle2; }
+    inline T& setAngle3(){ return angle3; }
 protected:
 private:
-    T psi;
-    T theta;
-    T phi;
+    RotationSequence seq;
+    T angle1;
+    T angle2;
+    T angle3;
 }; // class Euler
 
 //! Default constructor
 template<class T>
-Euler<T>::Euler():
-    psi(0),
-    theta(0),
-    phi(0)
+Euler<T>::Euler(RotationSequence _seq):
+    seq(_seq),
+    angle1(0),
+    angle2(0),
+    angle3(0)
 {
 }
 
-//! Create from provided angles
 template<class T>
-Euler<T>::Euler(T _psi, T _theta, T _phi):
-    psi(_psi),
-    theta(_theta),
-    phi(_phi)
+Euler<T>::Euler(T _angle1, T _angle2, T _angle3, RotationSequence _seq):
+    seq(_seq),
+    angle1(_angle1),
+    angle2(_angle2),
+    angle3(_angle3)
 {
 }
 
 //! Create from DCM
 template<class T>
-Euler<T>::Euler(const DCM<T> &dcm)
+Euler<T>::Euler(const DCM<T> &dcm, RotationSequence _seq):
+    seq(_seq)
 {
+    #if 0
     // need to account for (see Stevens and Lewis page 12):
     // -pi < phi <= +pi
     // -pi/2 <= theta <= pi/2
@@ -144,11 +123,13 @@ Euler<T>::Euler(const DCM<T> &dcm)
         phi = atan2(dcm(1,2), dcm(2,2));
         psi = atan2(dcm(0,1), dcm(0,0));
     }
+    #endif
 }
 
 //! Create from quaternion
 template<class T>
-Euler<T>::Euler(const Quaternion<T> &quaternion)
+Euler<T>::Euler(const Quaternion<T> &quaternion, RotationSequence _seq):
+    seq(_seq)
 {
     //
 }

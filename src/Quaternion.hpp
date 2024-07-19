@@ -20,6 +20,7 @@
 #include "DCM.hpp"
 #include "Euler.hpp"
 // #include "AxisAngle.hpp"
+#include "RotationSequence.hpp"
 
 namespace matrix
 {
@@ -117,17 +118,31 @@ public:
 
     //! Invert this quaternion
     void invert();
+
+    //! Get individual elements
+    inline const T x() const { return this->data[1]; }
+    inline const T y() const { return this->data[2]; }
+    inline const T z() const { return this->data[3]; }
+    inline const T w() const { return this->data[0]; }
+
+    //! Get the scalar part
+    inline const T scalar() const { return this->data[0]; }
+
+    //! Get the vector part
+    inline const Vector3<T> vector() const { return Vector3<T>(this->data[1], this->data[2], this->data[3]); }
+
+    //! Return as a matrix
+    SquareMatrix<T, 4> asMatrix() const;
 };
 
 //! Default constructor
 template<class T>
 Quaternion<T>::Quaternion()
 {
-    Quaternion &self = *this;
-    this->data[0] = T(1);
-    this->data[1] = T(0);
-    this->data[2] = T(0);
-    this->data[3] = T(0);
+    this->data[0] = static_cast<T>(1);
+    this->data[1] = static_cast<T>(0);
+    this->data[2] = static_cast<T>(0);
+    this->data[3] = static_cast<T>(0);
 }
 
 //! Constructor from array of values
@@ -141,7 +156,6 @@ Quaternion<T>::Quaternion(const T values[4]):
 template<class T>
 Quaternion<T>::Quaternion(T q0, T q1, T q2, T q3)
 {
-    Quaternion &self = *this;
     this->data[0] = q0;
     this->data[1] = q1;
     this->data[2] = q2;
@@ -152,7 +166,6 @@ Quaternion<T>::Quaternion(T q0, T q1, T q2, T q3)
 template<class T>
 Quaternion<T>::Quaternion(const Vector3<T> &axis, T angle)
 {
-    Quaternion &self = *this;
     T halfAngle = angle / static_cast<T>(2);
     T sinHalf = std::sin(halfAngle);
     this->data[0] = std::cos(halfAngle);
@@ -165,20 +178,127 @@ Quaternion<T>::Quaternion(const Vector3<T> &axis, T angle)
 template<class T>
 Quaternion<T>::Quaternion(const Euler<T> &euler)
 {
-    //! Stevens & Lewis, Example 1.8-1, Eq 1
-    T phi_2 = euler.getPhi() * 0.5;
-    T theta_2 = euler.getTheta() * 0.5;
-    T psi_2 = euler.getPsi() * 0.5;
-    T c_phi_2 = std::cos(phi_2);
-    T s_phi_2 = std::sin(phi_2);
-    T c_theta_2 = std::cos(theta_2);
-    T s_theta_2 = std::sin(theta_2);
-    T c_psi_2 = std::cos(psi_2);
-    T s_psi_2 = std::sin(psi_2);
-    this->data[0] = c_phi_2*c_theta_2*c_psi_2 + s_phi_2*s_theta_2*s_psi_2;
-    this->data[1] = s_phi_2*c_theta_2*c_psi_2 - c_phi_2*s_theta_2*s_psi_2;
-    this->data[2] = c_phi_2*s_theta_2*c_psi_2 + s_phi_2*c_theta_2*s_psi_2;
-    this->data[3] = c_phi_2*c_theta_2*s_psi_2 - s_phi_2*s_theta_2*c_psi_2;
+    T a1 = 0.5*euler.getAngle1();
+    T a2 = 0.5*euler.getAngle2();
+    T a3 = 0.5*euler.getAngle3();
+    switch(euler.getRotatationSequence())
+    {
+        case RotationSequence::ZXZ_313:
+        {
+            T plus = 0.5*(euler.getAngle1() + euler.getAngle3());
+            T minus = 0.5*(euler.getAngle1() - euler.getAngle3());
+            this->data[0] = std::cos(a2)*std::cos(plus);
+            this->data[1] = std::sin(a2)*std::cos(minus);
+            this->data[2] = std::sin(a2)*std::sin(minus);
+            this->data[3] = std::cos(a2)*std::sin(plus);
+        } break;
+
+        case RotationSequence::XYX_121:
+        {
+            T plus = 0.5*(euler.getAngle1() + euler.getAngle3());
+            T minus = 0.5*(euler.getAngle1() - euler.getAngle3());
+            this->data[0] = std::cos(a2)*std::cos(plus);
+            this->data[1] = std::cos(a2)*std::sin(plus);
+            this->data[2] = std::sin(a2)*std::cos(minus);
+            this->data[3] = std::sin(a2)*std::sin(minus);
+        } break;
+
+        case RotationSequence::YZY_232:
+        {
+            T plus = 0.5*(euler.getAngle1() + euler.getAngle3());
+            T minus = 0.5*(euler.getAngle1() - euler.getAngle3());
+            this->data[0] = std::cos(a2)*std::cos(plus);
+            this->data[1] = std::sin(a2)*std::sin(minus);
+            this->data[2] = std::cos(a2)*std::sin(plus);
+            this->data[3] = std::sin(a2)*std::cos(minus);
+        } break;
+
+        case RotationSequence::ZYZ_323:
+        {
+            T plus = 0.5*(euler.getAngle1() + euler.getAngle3());
+            T minus = 0.5*(euler.getAngle1() - euler.getAngle3());
+            this->data[0] =  std::cos(a2)*std::cos(plus);
+            this->data[1] = -std::sin(a2)*std::sin(minus);
+            this->data[2] =  std::sin(a2)*std::cos(minus);
+            this->data[3] =  std::cos(a2)*std::sin(plus);
+        } break;
+
+        case RotationSequence::XZX_131:
+        {
+            T plus = 0.5*(euler.getAngle1() + euler.getAngle3());
+            T minus = 0.5*(euler.getAngle1() - euler.getAngle3());
+            this->data[0] =  std::cos(a2)*std::cos(plus);
+            this->data[1] =  std::cos(a2)*std::sin(plus);
+            this->data[2] = -std::sin(a2)*std::sin(minus);
+            this->data[3] =  std::sin(a2)*std::cos(minus);
+        } break;
+
+        case RotationSequence::YXY_212:
+        {
+            T plus = 0.5*(euler.getAngle1() + euler.getAngle3());
+            T minus = 0.5*(euler.getAngle1() - euler.getAngle3());
+            this->data[0] =  std::cos(a2)*std::cos(plus);
+            this->data[1] =  std::sin(a2)*std::cos(minus);
+            this->data[2] =  std::cos(a2)*std::sin(plus);
+            this->data[3] = -std::sin(a2)*std::sin(minus);
+        } break;
+
+        case RotationSequence::XYZ_123:
+        {
+            this->data[0] = -std::sin(a1)*std::sin(a2)*std::sin(a3) + std::cos(a1)*std::cos(a2)*std::cos(a3);
+            this->data[1] =  std::sin(a1)*std::cos(a2)*std::cos(a3) + std::sin(a2)*std::sin(a3)*std::cos(a1);
+            this->data[2] = -std::sin(a1)*std::sin(a3)*std::cos(a2) + std::sin(a2)*std::cos(a1)*std::cos(a3);
+            this->data[3] =  std::sin(a1)*std::sin(a2)*std::cos(a3) + std::sin(a3)*std::cos(a1)*std::cos(a2);
+        } break;
+
+        case RotationSequence::YZX_231:
+        {
+            this->data[0] = -std::sin(a1)*std::sin(a2)*std::sin(a3) + std::cos(a1)*std::cos(a2)*std::cos(a3);
+            this->data[1] =  std::sin(a1)*std::sin(a2)*std::cos(a3) + std::sin(a3)*std::cos(a1)*std::cos(a2);
+            this->data[2] =  std::sin(a1)*std::cos(a2)*std::cos(a3) + std::sin(a2)*std::sin(a3)*std::cos(a1);
+            this->data[3] = -std::sin(a1)*std::sin(a3)*std::cos(a2) + std::sin(a2)*std::cos(a1)*std::cos(a3);
+        } break;
+
+        case RotationSequence::ZXY_312:
+        {
+            this->data[0] = -std::sin(a1)*std::sin(a2)*std::sin(a3) + std::cos(a1)*std::cos(a2)*std::cos(a3);
+            this->data[1] = -std::sin(a1)*std::sin(a3)*std::cos(a2) + std::sin(a2)*std::cos(a1)*std::cos(a3);
+            this->data[2] =  std::sin(a1)*std::sin(a2)*std::cos(a3) + std::sin(a3)*std::cos(a1)*std::cos(a2);
+            this->data[3] =  std::sin(a1)*std::cos(a2)*std::cos(a3) + std::sin(a2)*std::sin(a3)*std::cos(a1);
+        } break;
+
+        case RotationSequence::XZY_132:
+        {
+            this->data[0] =  std::sin(a1)*std::sin(a2)*std::sin(a3) + std::cos(a1)*std::cos(a2)*std::cos(a3);
+            this->data[1] =  std::sin(a1)*std::cos(a2)*std::cos(a3) - std::sin(a2)*std::sin(a3)*std::cos(a1);
+            this->data[2] = -std::sin(a1)*std::sin(a2)*std::cos(a3) + std::sin(a3)*std::cos(a1)*std::cos(a2);
+            this->data[3] =  std::sin(a1)*std::sin(a3)*std::cos(a2) + std::sin(a2)*std::cos(a1)*std::cos(a3);
+        } break;
+
+        case RotationSequence::ZYX_321:
+        {
+            this->data[0] =  std::sin(a1)*std::sin(a2)*std::sin(a3) + std::cos(a1)*std::cos(a2)*std::cos(a3);
+            this->data[1] = -std::sin(a1)*std::sin(a2)*std::cos(a3) + std::sin(a3)*std::cos(a1)*std::cos(a2);
+            this->data[2] =  std::sin(a1)*std::sin(a3)*std::cos(a2) + std::sin(a2)*std::cos(a1)*std::cos(a3);
+            this->data[3] =  std::sin(a1)*std::cos(a2)*std::cos(a3) - std::sin(a2)*std::sin(a3)*std::cos(a1);
+        } break;
+
+        case RotationSequence::YXZ_213:
+        {
+            this->data[0] =  std::sin(a1)*std::sin(a2)*std::sin(a3) + std::cos(a1)*std::cos(a2)*std::cos(a3);
+            this->data[1] =  std::sin(a1)*std::sin(a3)*std::cos(a2) + std::sin(a2)*std::cos(a1)*std::cos(a3);
+            this->data[2] =  std::sin(a1)*std::cos(a2)*std::cos(a3) - std::sin(a2)*std::sin(a3)*std::cos(a1);
+            this->data[3] = -std::sin(a1)*std::sin(a2)*std::cos(a3) + std::sin(a3)*std::cos(a1)*std::cos(a2);
+        } break;
+
+        default:
+        {
+            // Undefined rotation sequence
+            char message[100];
+            snprintf(message, 100, "ERROR: Undefined rotation sequence!\n");
+            throw std::runtime_error(message);
+        } break;
+    }
 }
 
 //! Construct from Direction Cosine Matrix
@@ -190,9 +310,6 @@ Quaternion<T>::Quaternion(const DCM<T> &dcm)
     if( t > 0.0)
     {
         this->data[0] = 0.5*std::sqrt(1.0 + t);
-        // this->data[1] = (dcm(1,2) - dcm(2,1)) / (4.0*this->data[0]);
-        // this->data[2] = (dcm(2,0) - dcm(0,2)) / (4.0*this->data[0]);
-        // this->data[3] = (dcm(0,1) - dcm(1,0)) / (4.0*this->data[0]);
         this->data[1] = (dcm(2,1) - dcm(1,2)) / (4.0*this->data[0]);
         this->data[2] = (dcm(0,2) - dcm(2,0)) / (4.0*this->data[0]);
         this->data[3] = (dcm(1,0) - dcm(0,1)) / (4.0*this->data[0]);
@@ -201,9 +318,6 @@ Quaternion<T>::Quaternion(const DCM<T> &dcm)
     {
         this->data[1] = 0.5*std::sqrt(1.0 + dcm(0,0) - dcm(1,1) - dcm(2,2));
         T div = 1.0 / (4.0*this->data[1]);
-        // this->data[0] = (dcm(1,2) - dcm(2,1)) / (4.0*this->data[1]);
-        // this->data[2] = (dcm(0,1) + dcm(1,0)) / (4.0*this->data[1]);
-        // this->data[3] = (dcm(2,0) + dcm(0,2)) / (4.0*this->data[1]);
         this->data[0] = (dcm(2,1) - dcm(1,2)) * div;
         this->data[2] = (dcm(1,0) + dcm(0,1)) * div;
         this->data[3] = (dcm(0,2) + dcm(2,0)) * div;
@@ -212,9 +326,6 @@ Quaternion<T>::Quaternion(const DCM<T> &dcm)
     {
         this->data[2] = 0.5*std::sqrt(1.0 - dcm(0,0) + dcm(1,1) - dcm(2,2));
         T div = 1.0 / (4.0*this->data[2]);
-        // this->data[0] = (dcm(2,0) - dcm(0,2)) / (4.0*this->data[2]);
-        // this->data[1] = (dcm(0,1) + dcm(1,0)) / (4.0*this->data[2]);
-        // this->data[3] = (dcm(1,2) + dcm(2,1)) / (4.0*this->data[2]);
         this->data[0] = (dcm(0,2) - dcm(2,0)) * div;
         this->data[1] = (dcm(1,0) + dcm(0,1)) * div;
         this->data[3] = (dcm(2,1) + dcm(1,2)) * div;
@@ -223,9 +334,6 @@ Quaternion<T>::Quaternion(const DCM<T> &dcm)
     {
         this->data[3] = 0.5*std::sqrt(1.0 - dcm(0,0) - dcm(1,1) + dcm(2,2));
         T div = 1.0 / (4.0*this->data[3]);
-        // this->data[0] = (dcm(0,1) - dcm(1,0)) / (4.0*this->data[3]);
-        // this->data[1] = (dcm(2,0) + dcm(0,2)) / (4.0*this->data[3]);
-        // this->data[2] = (dcm(1,2) + dcm(2,1)) / (4.0*this->data[3]);
         this->data[0] = (dcm(1,0) - dcm(0,1)) * div;
         this->data[1] = (dcm(0,2) + dcm(2,0)) * div;
         this->data[2] = (dcm(2,1) + dcm(1,2)) * div;
@@ -319,9 +427,9 @@ Quaternion<T> Quaternion<T>::operator*(const Quaternion<T> &q) const
     // r = p * q
     const Quaternion &p = *this;
     Quaternion r = {p(0)*q(0) - p(1)*q(1) - p(2)*q(2) - p(3)*q(3),
-                    p(1)*q(0) + p(0)*q(1) - p(3)*q(2) + p(2)*q(3),
-                    p(2)*q(0) + p(3)*q(1) + p(0)*q(2) - p(1)*q(3),
-                    p(3)*q(0) - p(2)*q(1) + p(1)*q(2) + p(0)*q(3)};
+                    p(0)*q(1) + p(1)*q(0) + p(2)*q(3) - p(3)*q(2),
+                    p(0)*q(2) - p(1)*q(3) + p(2)*q(0) + p(3)*q(1),
+                    p(0)*q(3) + p(1)*q(2) - p(2)*q(1) + p(3)*q(0)};
     return r;
 }
 
@@ -374,7 +482,6 @@ Quaternion<T> Quaternion<T>::operator*(T value) const
     return Quaternion<T>(this->data[0]*value, this->data[1]*value, this->data[2]*value, this->data[3]*value);
 }
 
-
 //! Compound quaternion-scalar addition
 template<class T>
 void Quaternion<T>::operator+=(T value)
@@ -408,7 +515,6 @@ T Quaternion<T>::norm() const
 template<class T>
 Quaternion<T> Quaternion<T>::conjugate() const
 {
-    // const Quaternion &g = *this;
     return Quaternion(this->data[0], -this->data[1], -this->data[2], -this->data[3]);
 }
 
@@ -437,6 +543,17 @@ void Quaternion<T>::invert()
 {
     Quaternion<T> &self = *this;
     self = self.inverse();
+}
+
+//! Return as a matrix
+template<class T>
+SquareMatrix<T, 4> Quaternion<T>::asMatrix() const
+{
+    SquareMatrix<T, 4> m = {{ this->data[0],  this->data[1],  this->data[2],  this->data[3]},
+                            {-this->data[1],  this->data[0], -this->data[3],  this->data[2]},
+                            {-this->data[2],  this->data[3],  this->data[0], -this->data[1]},
+                            {-this->data[3], -this->data[2],  this->data[1],  this->data[0]}};
+    return m;
 }
 
 //! Scalar-Quaternion multiplication
