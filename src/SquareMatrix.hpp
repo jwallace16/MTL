@@ -54,6 +54,18 @@ public:
     //! Generate the minor matrix given a column index
     SquareMatrix<T, M-1> minor(const size_t row, const size_t col) const;
 
+    //! Test if matrix is upper triangular (nonzeros on diagonal and above)
+    bool isUpperTriangular(const double eps = 1.0e-6) const;
+
+    //! Test if matrix is lower triangular (nonzeros on diagonal and below)
+    bool isLowerTriangular(const double eps = 1.0e-6) const;
+
+    //! Make Upper Triangular matrix (filled with 1s)
+    void makeUpperTriangular();
+
+    //! Make Lower Triangular matrix (filled with 1s)
+    void makeLowerTriangular();
+
     //! LU Decomposition
     void LU_decomposition(SquareMatrix<T, M> &L, SquareMatrix<T, M> &U);
 };
@@ -165,11 +177,99 @@ SquareMatrix<T, M-1> SquareMatrix<T, M>::minor(const size_t row, const size_t co
     return minor;
 }
 
+//! Test if matrix is upper triangular (nonzeros on diagonal and above)
+template<class T, size_t M>
+bool SquareMatrix<T, M>::isUpperTriangular(const double eps) const
+{
+    for(size_t i = 0; i < M; ++i)
+    {
+        for(size_t j = 0; j < M; ++j)
+        {
+            if(i > j && std::fabs(static_cast<double>(this->data[i*M+j])) >= eps)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+//! Test if matrix is lower triangular (nonzeros on diagonal and below)
+template<class T, size_t M>
+bool SquareMatrix<T, M>::isLowerTriangular(const double eps) const
+{
+    for(size_t i = 0; i < M; ++i)
+    {
+        for(size_t j = 0; j < M; ++j)
+        {
+            if(i < j && std::fabs(static_cast<double>(this->data[i*M+j])) >= eps)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+//! Make Upper Triangular matrix (filled with 1s)
+template<class T, size_t M>
+void SquareMatrix<T, M>::makeUpperTriangular()
+{
+    for(size_t i = 0; i < M; ++i)
+    {
+        for(size_t j = 0; j < M; ++j)
+        {
+            if(i <= j)
+            {
+                this->data[i*M+j] = static_cast<T>(1);
+            }
+        }
+    }
+}
+
+//! Make Lower Triangular matrix (filled with 1s)
+template<class T, size_t M>
+void SquareMatrix<T, M>::makeLowerTriangular()
+{
+    for(size_t i = 0; i < M; ++i)
+    {
+        for(size_t j = 0; j < M; ++j)
+        {
+            if(i >= j)
+            {
+                this->data[i*M+j] = static_cast<T>(1);
+            }
+        }
+    }
+}
+
 //! LU decomposition
 template<class T, size_t M>
 void SquareMatrix<T, M>::LU_decomposition(SquareMatrix<T, M> &L, SquareMatrix<T, M> &U)
 {
-    //
+    // TODO: figure out why self is getting modified (see Introduction to Algorithms, 3rd 28.1)
+    // SquareMatrix<T, M> &self = *this;
+    SquareMatrix<T, M> A = *this;
+    size_t n = M;
+    L.identity();
+    // U.identity();
+
+    for(size_t k = 0; k < n; ++k)
+    {
+        U(k,k) = A(k,k);
+        for(size_t i = k+1; i < n; ++i)
+        {
+            L(i,k) = A(i,k) / A(k,k);
+            U(k,i) = A(k,i);
+        }
+        for(size_t i = k+1; i < n; ++i)
+        {
+            for(size_t j = k+1; j < n; ++j)
+            {
+                A(i,j) = A(i,j) - L(i,k)*U(k,j);
+            }
+        }
+    }
 }
 
 //! Return the determinant of a trivial 1x1 matrix
@@ -227,6 +327,24 @@ SquareMatrix<T, 2> inverse(const SquareMatrix<T, 2> &A)
     Ainv(1,1) = A(0,0);
     Ainv /= det;
     return Ainv;
+}
+
+//! Create and return Upper Triangular matrix
+template<class T, size_t M>
+SquareMatrix<T, M> upperTriangular()
+{
+    SquareMatrix<T, M> m;
+    m.makeUpperTriangular();
+    return m;
+}
+
+//! Create and return Lower Triangular matrix
+template<class T, size_t M>
+SquareMatrix<T, M> lowerTriangular()
+{
+    SquareMatrix<T, M> m;
+    m.makeLowerTriangular();
+    return m;
 }
 
 //! Compute the inverse of a 3x3 matrix

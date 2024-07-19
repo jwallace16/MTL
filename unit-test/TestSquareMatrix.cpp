@@ -472,6 +472,146 @@ TEST(SquareMatrixTestSuite, TestMinor)
     EXPECT_EQ(5, minor9(1,1));
 }
 
+TEST(SquareMatrixTestSuite, TestIsUpperTriangular)
+{
+    matrix::SquareMatrix<int, 3> m1 = {{2, 1, 5}, {0, 6, 3}, {0, 0, 1}};
+    EXPECT_TRUE(m1.isUpperTriangular());
+
+    matrix::SquareMatrix<double, 4> m2 = {{1.0e-5, 1.0, 2.0, 3.0}, {1.0e-7, 3.0, 4.0, 5.0}, {0.0, -1.0e-7, 1.0, 2.0}, {0.0, 0.0, 0.0, 4.0}};
+    EXPECT_TRUE(m2.isUpperTriangular());
+
+    matrix::SquareMatrix<double, 2> m3 = {{0.0, 0.0}, {0.0, 0.0}};
+    EXPECT_TRUE(m3.isUpperTriangular());
+
+    matrix::SquareMatrix<double, 3> m4 = {{1.0, 2.0, -3.0}, {1.0e-6, 0.05, 2.0}, {0.0, 0.0, 1.5}};
+    EXPECT_FALSE(m4.isUpperTriangular());
+
+    matrix::SquareMatrix<int, 3> m5 = {{1000, 1, 3}, {0, 5, 1}, {-1, 0, 2}};
+    EXPECT_FALSE(m5.isUpperTriangular());
+}
+
+TEST(SquareMatrixTestSuite, TestIsLowerTriangular)
+{
+    matrix::SquareMatrix<int, 3> m1 = {{1, 0, 0}, {1, 1, 0}, {1, 1, 1}};
+    EXPECT_TRUE(m1.isLowerTriangular());
+
+    matrix::SquareMatrix<double, 4> m2 = {{1.0e-5, 0.0, 1.0e-7, 0.0}, {2.2, -1.0e-6, 0.0, 0.0}, {7.0, 8.0, 2.0, 0.0}, {1.0, 1.0, 1.0, 1.0}};
+    EXPECT_TRUE(m2.isLowerTriangular());
+
+    matrix::SquareMatrix<double, 2> m3 = {{0.0, 0.0}, {0.0, 0.0}};
+    EXPECT_TRUE(m3.isLowerTriangular());
+
+    matrix::SquareMatrix<double, 3> m4 = {{1.0, 0.0, 1.0e-6}, {1.0, 1.0, 0.0}, {1.0, 1.0, 1.0}};
+    EXPECT_FALSE(m4.isLowerTriangular());
+
+    matrix::SquareMatrix<int, 3> m5 = {{1, 0, -1}, {1, 1, 0}, {1, 1, 1}};
+    EXPECT_FALSE(m5.isLowerTriangular());
+}
+
+TEST(SquareMatrixTestSuite, TestMakeUpperTriangular)
+{
+    matrix::SquareMatrix<int, 3> m1 = matrix::upperTriangular<int, 3>();
+    EXPECT_TRUE(m1.isUpperTriangular());
+    EXPECT_FALSE(m1.isLowerTriangular());
+
+    matrix::SquareMatrix<double, 3> m2 = matrix::upperTriangular<double, 3>();
+    EXPECT_TRUE(m2.isUpperTriangular());
+    EXPECT_FALSE(m2.isLowerTriangular());
+
+    matrix::SquareMatrix<int, 5> m3;
+    m3.makeUpperTriangular();
+    EXPECT_TRUE(m3.isUpperTriangular());
+    EXPECT_FALSE(m3.isLowerTriangular());
+
+    matrix::SquareMatrix<double, 7> m4;
+    m4.makeUpperTriangular();
+    EXPECT_TRUE(m4.isUpperTriangular());
+    EXPECT_FALSE(m4.isLowerTriangular());
+}
+
+TEST(SquareMatrixTestSuite, TestMakeLowerTriangular)
+{
+    matrix::SquareMatrix<int, 3> m1 = matrix::lowerTriangular<int, 3>();
+    std::cout << m1 << std::endl;
+    EXPECT_TRUE(m1.isLowerTriangular());
+    EXPECT_FALSE(m1.isUpperTriangular());
+
+    matrix::SquareMatrix<double, 3> m2 = matrix::lowerTriangular<double, 3>();
+    std::cout << m2 << std::endl;
+    EXPECT_TRUE(m2.isLowerTriangular());
+    EXPECT_FALSE(m2.isUpperTriangular());
+
+    matrix::SquareMatrix<int, 5> m3;
+    m3.makeLowerTriangular();
+    std::cout << m3 << std::endl;
+    EXPECT_TRUE(m3.isLowerTriangular());
+    EXPECT_FALSE(m3.isUpperTriangular());
+
+    matrix::SquareMatrix<double, 7> m4;
+    m4.makeLowerTriangular();
+    std::cout << m4 << std::endl;
+    EXPECT_TRUE(m4.isLowerTriangular());
+    EXPECT_FALSE(m4.isUpperTriangular());
+}
+
+TEST(SquareMatrixTestSuite, TestLUDecomposition)
+{
+    matrix::SquareMatrix<int, 4> A = {{2, 3, 1, 5}, {6, 13, 5, 19}, {2, 19, 10, 23}, {4, 10, 11, 31}};
+    matrix::SquareMatrix<int, 4> L, U;
+    A.LU_decomposition(L, U);
+    EXPECT_EQ(1, L(0,0));
+    EXPECT_EQ(0, L(0,1));
+    EXPECT_EQ(0, L(0,2));
+    EXPECT_EQ(0, L(0,3));
+    EXPECT_EQ(3, L(1,0));
+    EXPECT_EQ(1, L(1,1));
+    EXPECT_EQ(0, L(1,2));
+    EXPECT_EQ(0, L(1,3));
+    EXPECT_EQ(1, L(2,0));
+    EXPECT_EQ(4, L(2,1));
+    EXPECT_EQ(1, L(2,2));
+    EXPECT_EQ(0, L(2,3));
+    EXPECT_EQ(2, L(3,0));
+    EXPECT_EQ(1, L(3,1));
+    EXPECT_EQ(7, L(3,2));
+    EXPECT_EQ(1, L(3,3));
+
+    EXPECT_EQ(2, U(0,0));
+    EXPECT_EQ(3, U(0,1));
+    EXPECT_EQ(1, U(0,2));
+    EXPECT_EQ(5, U(0,3));
+    EXPECT_EQ(0, U(1,0));
+    EXPECT_EQ(4, U(1,1));
+    EXPECT_EQ(2, U(1,2));
+    EXPECT_EQ(4, U(1,3));
+    EXPECT_EQ(0, U(2,0));
+    EXPECT_EQ(0, U(2,1));
+    EXPECT_EQ(1, U(2,2));
+    EXPECT_EQ(2, U(2,3));
+    EXPECT_EQ(0, U(3,0));
+    EXPECT_EQ(0, U(3,1));
+    EXPECT_EQ(0, U(3,2));
+    EXPECT_EQ(3, U(3,3));
+    
+    matrix::SquareMatrix<int, 4> E = L*U;
+    EXPECT_EQ(2, E(0,0));
+    EXPECT_EQ(3, E(0,1));
+    EXPECT_EQ(1, E(0,2));
+    EXPECT_EQ(5, E(0,3));
+    EXPECT_EQ(6, E(1,0));
+    EXPECT_EQ(13, E(1,1));
+    EXPECT_EQ(5, E(1,2));
+    EXPECT_EQ(19, E(1,3));
+    EXPECT_EQ(2, E(2,0));
+    EXPECT_EQ(19, E(2,1));
+    EXPECT_EQ(10, E(2,2));
+    EXPECT_EQ(23, E(2,3));
+    EXPECT_EQ(4, E(3,0));
+    EXPECT_EQ(10, E(3,1));
+    EXPECT_EQ(11, E(3,2));
+    EXPECT_EQ(31, E(3,3));
+}
+
 TEST(SquareMatrixTestSuite, Test1x1Determinant)
 {
     matrix::SquareMatrix<int, 1> m = {{3}};
