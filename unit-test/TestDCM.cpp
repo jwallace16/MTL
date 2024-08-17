@@ -217,3 +217,155 @@ TEST(DCMTestSuite, TestQuaternionConversionConstructor)
     EXPECT_DOUBLE_EQ(0.50360837656663437, d12(2,1));
     EXPECT_DOUBLE_EQ(0.4959638734593364, d12(2,2));
 }
+
+TEST(DCMTestSuite, TestEulerAngleConversionConstructor)
+{
+    double deg2rad = M_PI / 180.0;
+    double angle1 = 32.0 * deg2rad;
+    double angle2 = 44.0 * deg2rad;
+    double angle3 = -100.0 * deg2rad;
+
+    matrix::Euler<double> e1(angle1, angle2, angle3, RotationSequence::ZXZ_313);
+    matrix::DCM<double> d1(e1);
+    // EXPECT_DOUBLE_EQ(0.0, d1(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d1(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d1(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d1(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d1(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d1(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d1(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d1(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d1(2,2));
+
+    matrix::Euler<double> e2(angle1, angle2, angle3, RotationSequence::XYX_121);
+    matrix::DCM<double> d2(e2);
+    // EXPECT_DOUBLE_EQ(0.0, d2(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d2(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d2(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d2(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d2(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d2(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d2(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d2(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d2(2,2));
+
+    matrix::Euler<double> e3(angle1, angle2, angle3, RotationSequence::YZY_232);
+    matrix::DCM<double> d3(e3);
+    // EXPECT_DOUBLE_EQ(0.0, d3(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d3(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d3(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d3(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d3(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d3(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d3(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d3(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d3(2,2));
+
+    matrix::Euler<double> e4(angle1, angle2, angle3, RotationSequence::ZYZ_323);
+    matrix::DCM<double> d4(e4);
+    EXPECT_DOUBLE_EQ(0.41593717755472648, d4(0,0));
+    EXPECT_DOUBLE_EQ(0.69278646414614875, d4(0,1));
+    EXPECT_DOUBLE_EQ(0.58910370854687788, d4(0,2));
+    EXPECT_DOUBLE_EQ(-0.90135763924193235, d4(1,0));
+    EXPECT_DOUBLE_EQ(0.22813884797452991, d4(1,1));
+    EXPECT_DOUBLE_EQ(0.36811285256706888, d4(1,2));
+    EXPECT_DOUBLE_EQ(0.12062616013128424, d4(2,0));
+    EXPECT_DOUBLE_EQ(-0.68410494892284712, d4(2,1));
+    EXPECT_DOUBLE_EQ(0.71933980033865119, d4(2,2));
+
+    matrix::Euler<double> e5(angle1, angle2, angle3, RotationSequence::XZX_131);
+    matrix::DCM<double> d5(e5);
+    // EXPECT_DOUBLE_EQ(0.0, d5(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d5(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d5(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d5(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d5(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d5(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d5(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d5(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d5(2,2));
+
+    matrix::Euler<double> e6(angle1, angle2, angle3, RotationSequence::YXY_212);
+    matrix::DCM<double> d6(e6);
+    // EXPECT_DOUBLE_EQ(0.0, d6(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d6(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d6(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d6(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d6(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d6(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d6(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d6(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d6(2,2));
+
+    matrix::Euler<double> e7(angle1, angle2, angle3, RotationSequence::XYZ_123);
+    matrix::DCM<double> d7(e7);
+    // EXPECT_DOUBLE_EQ(0.0, d7(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d7(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d7(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d7(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d7(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d7(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d7(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d7(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d7(2,2));
+
+    matrix::Euler<double> e8(angle1, angle2, angle3, RotationSequence::YZX_231);
+    matrix::DCM<double> d8(e8);
+    // EXPECT_DOUBLE_EQ(0.0, d8(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d8(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d8(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d8(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d8(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d8(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d8(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d8(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d8(2,2));
+
+    matrix::Euler<double> e9(angle1, angle2, angle3, RotationSequence::ZXY_312);
+    matrix::DCM<double> d9(e9);
+    // EXPECT_DOUBLE_EQ(0.0, d9(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d9(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d9(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d9(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d9(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d9(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d9(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d9(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d9(2,2));
+
+    matrix::Euler<double> e10(angle1, angle2, angle3, RotationSequence::XZY_132);
+    matrix::DCM<double> d10(e10);
+    // EXPECT_DOUBLE_EQ(0.0, d10(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d10(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d10(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d10(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d10(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d10(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d10(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d10(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d10(2,2));
+    
+    matrix::Euler<double> e11(angle1, angle2, angle3, RotationSequence::ZYX_321);
+    matrix::DCM<double> d11(e11);
+    EXPECT_DOUBLE_EQ(0.61003474816673675, d11(0,0));
+    EXPECT_DOUBLE_EQ(-0.48813438496051292, d11(0,1));
+    EXPECT_DOUBLE_EQ(-0.62416538533338084, d11(0,2));
+    EXPECT_DOUBLE_EQ(0.38119201772911854, d11(1,0));
+    EXPECT_DOUBLE_EQ(-0.50978239766296241, d11(1,1));
+    EXPECT_DOUBLE_EQ(0.77124221399804382, d11(1,2));
+    EXPECT_DOUBLE_EQ(-0.69465837045899725, d11(2,0));
+    EXPECT_DOUBLE_EQ(-0.70841141242375738, d11(2,1));
+    EXPECT_DOUBLE_EQ(-0.12491204545210027, d11(2,2));
+
+    matrix::Euler<double> e12(angle1, angle2, angle3, RotationSequence::YXZ_213);
+    matrix::DCM<double> d12(e12);
+    // EXPECT_DOUBLE_EQ(0.0, d12(0,0));
+    // EXPECT_DOUBLE_EQ(0.0, d12(0,1));
+    // EXPECT_DOUBLE_EQ(0.0, d12(0,2));
+    // EXPECT_DOUBLE_EQ(0.0, d12(1,0));
+    // EXPECT_DOUBLE_EQ(0.0, d12(1,1));
+    // EXPECT_DOUBLE_EQ(0.0, d12(1,2));
+    // EXPECT_DOUBLE_EQ(0.0, d12(2,0));
+    // EXPECT_DOUBLE_EQ(0.0, d12(2,1));
+    // EXPECT_DOUBLE_EQ(0.0, d12(2,2));
+}

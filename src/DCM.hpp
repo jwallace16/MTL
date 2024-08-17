@@ -108,7 +108,7 @@ DCM<T>::DCM(const Euler<T> &e)
     T a1 = e.getAngle1();
     T a2 = e.getAngle2();
     T a3 = e.getAngle3();
-    switch(e.getSequence())
+    switch(e.getRotatationSequence())
     {
         case RotationSequence::ZXZ_313:
         {
